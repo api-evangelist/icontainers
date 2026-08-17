@@ -1,0 +1,98 @@
+generated: '2026-08-17'
+method: derived
+status: candidate
+source: openapi/icontainers-brutus-openapi.yml
+note: >-
+  iContainers ships NO MCP server. Searched for a hosted/remote server and a stdio package: mcp.icontainers.com
+  does not resolve, POST tools/list to https://brutus.icontainers.com/mcp returned 400 and to
+  https://www.icontainers.com/mcp and https://developer.icontainers.com/mcp returned 403 (edge blocks, not MCP
+  responses), the npm registry has no iContainers package of any kind, and neither the site nor
+  developer.icontainers.com mentions MCP, agents or tool calling. The tools[] below are a CANDIDATE mapping
+  DERIVED by API Evangelist from the 15 real Brutus API operations — they are a proposal for what an
+  iContainers MCP server could expose, not something iContainers publishes. No endpoint is asserted.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+  auth_note: >-
+    Any future server would inherit the API's JWT bearer scheme; tokens are not self-serve (see
+    sandbox/icontainers-sandbox.yml).
+server:
+  name: icontainers
+  transport: null
+  url: null
+search_evidence:
+- {url: 'https://mcp.icontainers.com/mcp', status: 0, finding: 'host does not resolve'}
+- {url: 'https://brutus.icontainers.com/mcp', status: 400, finding: 'not an MCP endpoint'}
+- {url: 'https://www.icontainers.com/mcp', status: 403, finding: 'edge block, not an MCP endpoint'}
+- {url: 'https://developer.icontainers.com/mcp', status: 403, finding: 'edge block, not an MCP endpoint'}
+- {registry: npm, query: 'icontainers mcp', first_party_matches: 0}
+tools:
+- name: search_maritime_places
+  description: Search origin/destination cities, postal codes and sea ports for an FCL or LCL ocean shipment.
+  source_operation: openapi/icontainers-brutus-openapi.yml#34de8aa5b349a2047b75f06e974d840c
+  http: GET /api/v1/locations/maritime/places
+- name: search_aerial_places
+  description: Search origin/destination cities, postal codes and airports for an air shipment.
+  source_operation: openapi/icontainers-brutus-openapi.yml#f7652b9cd80cf6ebb58789309b5420bd
+  http: GET /api/v1/locations/aerial/places
+- name: create_fcl_quote
+  description: Create a new Full Container Load ocean freight quote and return its rates.
+  source_operation: openapi/icontainers-brutus-openapi.yml#FclQuote
+  http: POST /api/v1/quotes/fcl
+- name: create_lcl_quote
+  description: Create a new Less than Container Load ocean freight quote and return its rates.
+  source_operation: openapi/icontainers-brutus-openapi.yml#LclQuote
+  http: POST /api/v1/quotes/lcl
+- name: create_air_quote
+  description: Create a new air freight quote and return its rates.
+  source_operation: openapi/icontainers-brutus-openapi.yml#AirQuote
+  http: POST /api/v1/quotes/air
+- name: create_ltl_quote
+  description: Create a new less-than-truckload quote and return its rates.
+  source_operation: openapi/icontainers-brutus-openapi.yml#LtlQuote
+  http: POST /api/v1/quotes/ltl
+- name: get_quote
+  description: Retrieve a quote and its rates by UUID.
+  source_operation: openapi/icontainers-brutus-openapi.yml#GetQuote
+  http: GET /api/v1/quotes/{uuid}
+- name: calculate_rate_prices
+  description: Price a rate with a chosen set of services and optional billing items before booking.
+  source_operation: openapi/icontainers-brutus-openapi.yml#RateCalculatePrices
+  http: POST /api/v1/rates/{rateUuid}/calculatePrices
+- name: book_rate
+  description: Book a quoted rate. Asynchronous — returns 202 with a new bookingUuid. WRITE, money-moving, no idempotency key.
+  source_operation: openapi/icontainers-brutus-openapi.yml#BookRate
+  http: POST /api/v1/rates/{rateUuid}/book
+  risk: high
+- name: get_booking_details
+  description: Read a booking's status, route, cargo items, charges and total amount.
+  source_operation: openapi/icontainers-brutus-openapi.yml#GetBookingDetails
+  http: GET /api/v1/bookings/{bookingUuid}/details
+- name: get_booking_track_and_trace
+  description: Read ETA/ETD/ATA/ATD and status for a booking.
+  source_operation: openapi/icontainers-brutus-openapi.yml#GetBookingTrackAndTracer
+  http: GET /api/v1/bookings/{bookingUuid}/trackAndTrace
+- name: upload_booking_document
+  description: Upload a document against a booking.
+  source_operation: openapi/icontainers-brutus-openapi.yml#AddDocumentForBooking
+  http: POST /api/v1/bookings/{bookingUuid}/documents
+- name: download_booking_document
+  description: Download a document attached to a booking.
+  source_operation: openapi/icontainers-brutus-openapi.yml#GetBookingDocument
+  http: GET /api/v1/bookings/{bookingUuid}/documents/{documentId}
+- name: get_document
+  description: Fetch document content by id.
+  source_operation: openapi/icontainers-brutus-openapi.yml#GetDocument
+  http: GET /api/v1/documents/{documentId}
+- name: get_tenant_document
+  description: Fetch document content by id on the tenant surface.
+  source_operation: openapi/icontainers-brutus-openapi.yml#GetDocumentTenant
+  http: GET /tenant/v1/documents/{documentId}
+coverage:
+  rest_operations_total: 15
+  candidate_tools: 15
+  published_tools: 0

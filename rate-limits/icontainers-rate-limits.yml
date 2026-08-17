@@ -1,0 +1,54 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  Observed on live unauthenticated responses from https://brutus.icontainers.com and
+  https://brutus-dev.icontainers.com on 2026-08-17. iContainers publishes no rate-limit documentation;
+  every value here was read off real response headers.
+docs: null
+note: >-
+  The Brutus API returns RateLimit headers on every response, including 401s, but the developer portal
+  (developer.icontainers.com) is spec-only and documents no limits, no 429 response and no Retry-After
+  behaviour — the OpenAPI declares no 429 on any of its 15 operations. The window was measured, not
+  assumed: three requests decremented x-ratelimit-remaining 59 -> 58, and 70 seconds later the counter
+  was back to 59, which establishes a fixed 60-second window. Exhaustion behaviour was NOT probed (that
+  would require deliberately burning the quota against a production host), so the 429 status and any
+  Retry-After header are recorded as unverified.
+limit_count: 1
+limits:
+- scope: per-client
+  window: 60s
+  limit: 60
+  burst: null
+  applies_to: all Brutus API operations (observed on /api/v1/quotes/{uuid} and /api/v1/locations/maritime/places)
+  hosts:
+  - https://brutus.icontainers.com
+  - https://brutus-dev.icontainers.com
+  evidence:
+    url: https://brutus.icontainers.com/api/v1/quotes/00000000-0000-0000-0000-000000000000
+    http_status: 401
+    headers_observed:
+      x-ratelimit-limit: '60'
+      x-ratelimit-remaining: '59'
+    window_measurement: >-
+      remaining went 59 -> 58 across consecutive requests and reset to 59 after 70 seconds, indicating a
+      60-request-per-minute fixed window
+headers:
+- name: X-RateLimit-Limit
+  observed: true
+  description: Ceiling for the current window (60).
+- name: X-RateLimit-Remaining
+  observed: true
+  description: Requests left in the current 60-second window.
+- name: X-RateLimit-Reset
+  observed: false
+  description: Not returned on 2xx/401 responses; may appear on a 429 (unverified).
+- name: Retry-After
+  observed: false
+  description: Not returned on the responses probed; exhaustion was not triggered.
+exhaustion:
+  status_code: null
+  note: >-
+    Not verified. The header shape (X-RateLimit-Limit/X-RateLimit-Remaining, no RateLimit-Policy) and the
+    stack banner (Apache + PHP 8.4, brutus_session cookie, Laravel-style 422 envelope) match a Laravel
+    `throttle` middleware, whose default exhaustion response is 429 with Retry-After — but that is an
+    inference from the stack, not an observation, and is deliberately not asserted here.

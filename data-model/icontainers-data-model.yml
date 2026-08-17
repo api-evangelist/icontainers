@@ -1,0 +1,96 @@
+generated: '2026-08-17'
+method: derived
+source: openapi/icontainers-brutus-openapi.yml ($ref graph + id-reference fields across 89 component schemas)
+note: >-
+  Entity graph derived from the Brutus API contract. iContainers publishes no object reference, so
+  id-prefix and domain notes come from schema examples only. The spine is
+  quote -> rate -> booking -> document, with place search feeding quote origin/destination.
+entities:
+- name: Quote
+  schema: Quote
+  id: uuid
+  id_format: uuid
+  created_by: [FclQuote, LclQuote, AirQuote, LtlQuote]
+  read_by: [GetQuote]
+  key_fields: [uuid, quotedAt, currency, lang, rates, quoteType, quoteOnlineUrl, completed]
+  note: 'quoteOnlineUrl links the API object back to the human UI at my.icontainers.com/quotes/<uuid>'
+- name: Rate
+  schema: RateResource
+  id: uuid
+  id_format: uuid
+  read_by: [GetQuote, RateCalculatePrices]
+  key_fields: [uuid, expirationDate, direct, schedule, billingItems, transitTime, publicTags, suppliersInformation, pickupSchedule, deliverySchedule, total, rateType, isPartial, departureWeekdays]
+  note: 'publicTags is a closed enum used for merchandising a rate (Promoted, Cheapest, Fastest, Spot, Partial, ...)'
+- name: Booking
+  schema: BookingData
+  id: uuid
+  id_format: uuid
+  created_by: [BookRate]
+  read_by: [GetBookingDetails, GetBookingTrackAndTracer]
+  key_fields: [uuid, totalAmount, origin, destination, originRoutingPort, destinationRoutingPort, createdAt, status, shipmentType, items, charges, commodityType]
+  lifecycle_states: [PREBOOKING, REQUESTED, PENDING, CANCELED, DONE]
+- name: BookingTrackAndTrace
+  schema: BookingTrackAndTraceData
+  id: uuid
+  read_by: [GetBookingTrackAndTracer]
+  key_fields: [uuid, estimatedTimeArrival, estimatedTimeDeparture, actualTimeArrival, actualTimeDeparture, status]
+- name: Document
+  schema: Document
+  id: id
+  id_format: opaque token string (88 chars in the schema example)
+  created_by: [AddDocumentForBooking]
+  read_by: [GetBookingDocument, GetDocument, GetDocumentTenant]
+  key_fields: [id, name, createdAt]
+- name: BillingItem
+  schema: BillingItem
+  key_fields: [name, serviceItem, optional, price]
+  note: 'optional=true items are the upsell surface RateCalculatePrices prices'
+- name: Supplier
+  schema: Supplier
+  note: 'carried per leg on SuppliersInformation.freight / .pickup / .delivery'
+- name: Charge
+  schema: BookingCharge
+  note: 'grouped under Charges / BookingChargeCollection on a booking'
+- name: BookingParty
+  schema: BookingParty
+  key_fields: [address]
+  note: 'addresses map on BookRateRequest is keyed by address type (shipper, consignee, billing)'
+- name: Place
+  schema: [SearchCitiesData, SearchPostalCodesData, SearchSeaPortsData, SearchAirportsData]
+  read_by: [34de8aa5b349a2047b75f06e974d840c, f7652b9cd80cf6ebb58789309b5420bd]
+  note: 'UN/LOCODE-style port codes appear in examples (ESBCN = Barcelona)'
+- name: CargoItem
+  schema: [ContainerItem, LclCargoItem, DimensionedCargoItem, OptionalDimensionedCargoItem]
+  note: 'shipment line items; container vs LCL vs dimensioned-cargo variants selected by shipmentType'
+relationships:
+- {from: Quote, to: Rate, kind: has_many, via: rates}
+- {from: Rate, to: BillingItem, kind: has_many, via: billingItems}
+- {from: Rate, to: RateSchedule, kind: has_one, via: schedule}
+- {from: Rate, to: InlandSchedule, kind: has_one, via: pickupSchedule}
+- {from: Rate, to: InlandSchedule, kind: has_one, via: deliverySchedule}
+- {from: Rate, to: Supplier, kind: has_many, via: suppliersInformation (freight/pickup/delivery)}
+- {from: Rate, to: Price, kind: has_one, via: total}
+- {from: Booking, to: Rate, kind: belongs_to, via: 'rateUuid (path parameter on BookRate)'}
+- {from: Booking, to: Document, kind: has_many, via: '/api/v1/bookings/{bookingUuid}/documents'}
+- {from: Booking, to: BookingTrackAndTrace, kind: has_one, via: '/api/v1/bookings/{bookingUuid}/trackAndTrace'}
+- {from: Booking, to: Charge, kind: has_many, via: charges}
+- {from: Booking, to: BookingParty, kind: has_many, via: addresses}
+- {from: Booking, to: CargoItem, kind: has_many, via: items}
+- {from: Booking, to: BookingLocation, kind: has_one, via: origin}
+- {from: Booking, to: BookingLocation, kind: has_one, via: destination}
+- {from: Booking, to: Money, kind: has_one, via: totalAmount}
+- {from: Quote, to: Place, kind: references, via: 'origin/destination location request objects (port, airport, city, postalCode)'}
+- {from: BillingItem, to: ServiceItem, kind: has_one, via: serviceItem}
+flows:
+- name: quote-to-booking
+  steps: [place search, create quote (FCL/LCL/air/LTL), read quote rates, calculate prices for a rate, book the rate, poll booking details/track-and-trace, upload documents]
+enumerations:
+  shipmentType: [FCL, LCL, AIR, LTL]
+  bookingStatus: [PREBOOKING, REQUESTED, PENDING, CANCELED, DONE]
+  commodity: [Regular Cargo, Refrigerated, 'Hazardous goods (DGR, IMO)', Perishable, Used Tires/Scrap, Household Goods, Livestock and Animals, Explosives]
+  ratePublicTags: [Promoted, Cheapest, Fastest, Spot, Partial, Unbreakable, Origin Prerequisite, Destination Prerequisite, Pickup Included, Origin Included, Destination Included, Delivery Included]
+  lang: [es_ES, en_US]
+units:
+  declared: [WeightUnit, DimensionUnit, VolumeUnit, TemperatureUnit, PackageType]
+  note: 'dangerous goods and temperature-controlled cargo have dedicated schemas (DangerousGood, TemperatureControlledGoods, ContainerTemperatureControl)'
+render: null

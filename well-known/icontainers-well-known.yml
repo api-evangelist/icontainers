@@ -1,0 +1,70 @@
+generated: '2026-08-17'
+method: probed
+source: live HTTP probes of every iContainers host in apis.yml + OpenAPI servers[]
+note: >-
+  Every /.well-known/ path returned HTTP 404 on every host — the marketing site (www), the API host
+  (brutus), the development API host (brutus-dev), the Redocly developer portal
+  (developer.icontainers.com) and the ELB-fronted api.icontainers.com. No document was served, so NO
+  WellKnown / SecurityTxt pointer is wired in apis.yml — this file records a verified absence, not a
+  presence. There is no security.txt (RFC 9116), no OIDC/OAuth discovery document (the API uses opaque
+  JWT bearer tokens with no published authorization server), no api-catalog (RFC 9727), no ai-plugin.json
+  and no A2A agent card.
+hosts:
+- host: https://www.icontainers.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /security.txt, status: 404}
+- host: https://brutus.icontainers.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://brutus-dev.icontainers.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://developer.icontainers.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://api.icontainers.com
+  note: AWS ELB host that answers 404 "Not found" on every path, including /
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+summary:
+  paths_probed: 42
+  documents_found: 0
+  security_txt: false
+  agent_card: false
+  api_catalog: false

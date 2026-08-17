@@ -1,25 +1,134 @@
 aid: icontainers
 name: iContainers
-description: 'iContainers is a company surfaced as a portfolio company of serena and added to the API
-  Evangelist network as a stub for enrichment. Sector: marketplace. This profile is a lead awaiting the
-  enrichment pipeline.'
+description: >-
+  iContainers is a digital freight forwarder founded in 2007 in Barcelona and now part of Agility Logistics, following
+  its 2019/2022 merger with Shipa Freight. The platform lets SMEs, importers/exporters, moving companies, freight agents
+  and individuals search, compare, book, insure, document and track international ocean freight (FCL and LCL), air
+  freight, air express and customs clearance across 250,000+ trade routes to 300+ destinations. Developer access is
+  published as the "Brutus API" — an OpenAPI 3.0.0 contract rendered on developer.icontainers.com covering FCL/LCL/air/LTL
+  quoting, rate price calculation, place/port search, booking a rate, booking track-and-trace, and booking document
+  upload/download — secured with JWT bearer tokens. iContainers also sells a white-label freight forwarding portal, and
+  its operational layer is supplied by the third-party platform VelocityOS.ai.
 url: https://raw.githubusercontent.com/api-evangelist/icontainers/refs/heads/main/apis.yml
+image: https://icontainers-public.s3.us-east-1.amazonaws.com/images/iContainers+Logo.svg
 x-type: company
 x-source: serena-portfolio
-x-tier: stub
-x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
 - Marketplace
-apis: []
+- Logistics
+- Freight
+- Shipping
+- Ocean Freight
+- Air Freight
+- Supply Chain
+- Customs
+- Freight Quoting
+- Container Shipping
+- Track And Trace
+apis:
+- name: iContainers Brutus API
+  description: >-
+    The Brutus API is iContainers' published REST contract for programmatic freight quoting and booking. It exposes
+    quote creation for FCL, LCL, air and LTL shipments, quote retrieval by UUID, price calculation for a returned rate,
+    maritime and aerial place/port search, booking a rate, retrieving booking details, booking track-and-trace, and
+    uploading/downloading booking documents. All operations require a JWT bearer token; validation failures return a
+    Laravel-style envelope with a `message` string and a per-field `errors` object.
+  humanURL: https://developer.icontainers.com/
+  baseURL: https://brutus.icontainers.com
+  tags:
+  - Freight
+  - Shipping
+  - Quotes
+  - Bookings
+  - Rates
+  - Documents
+  - Track And Trace
+  - Logistics
+  properties:
+  - type: OpenAPI
+    url: openapi/icontainers-brutus-openapi.yml
+  - type: Documentation
+    url: https://developer.icontainers.com/
+  - type: APIReference
+    url: https://developer.icontainers.com/
+  - type: Overlay
+    url: overlays/icontainers-brutus-overlay.yaml
+  - type: Authentication
+    url: authentication/icontainers-authentication.yml
+  - type: Conventions
+    url: conventions/icontainers-conventions.yml
+  - type: ErrorCatalog
+    url: errors/icontainers-problem-types.yml
+  - type: DataModel
+    url: data-model/icontainers-data-model.yml
+  - type: RateLimits
+    url: rate-limits/icontainers-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/icontainers-sandbox.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/icontainers-agentic-access.yml
+- type: DomainSecurity
+  url: security/icontainers-domain-security.yml
+- type: Authentication
+  url: authentication/icontainers-authentication.yml
 - type: Website
   url: https://www.icontainers.com/
+- type: DeveloperPortal
+  url: https://developer.icontainers.com/
+- type: Documentation
+  url: https://developer.icontainers.com/
+- type: APIReference
+  url: https://developer.icontainers.com/
+- type: Support
+  url: https://www.icontainers.com/help/
+- type: HelpCenter
+  url: https://www.icontainers.com/help/
+- type: Blog
+  url: https://www.icontainers.com/blog/
+- type: SignUp
+  url: https://www.icontainers.com/signup/
+- type: Login
+  url: https://www.icontainers.com/login/
+- type: TermsOfService
+  url: https://www.icontainers.com/terms-and-conditions/
+- type: PrivacyPolicy
+  url: https://www.icontainers.com/us/privacy-policy/
+- type: Conventions
+  url: conventions/icontainers-conventions.yml
+- type: ErrorCatalog
+  url: errors/icontainers-problem-types.yml
+- type: DataModel
+  url: data-model/icontainers-data-model.yml
+- type: Lifecycle
+  url: lifecycle/icontainers-lifecycle.yml
+- type: Conformance
+  url: conformance/icontainers-conformance.yml
+- type: RateLimits
+  url: rate-limits/icontainers-rate-limits.yml
+- type: Plans
+  url: plans/icontainers-plans-pricing.yml
+- type: Packages
+  url: packages/icontainers-packages.yml
+- type: Sandbox
+  url: sandbox/icontainers-sandbox.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/icontainers-llms.txt
+- type: Overlay
+  url: overlays/icontainers-brutus-overlay.yaml
+x-enrichment:
+  date: '2026-08-17'
+  status: enriched
+  artifacts_added: 23
+  pass: local-v1

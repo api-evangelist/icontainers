@@ -1,0 +1,109 @@
+generated: '2026-08-17'
+method: derived
+source: >-
+  openapi/icontainers-brutus-openapi.yml (all 15 operations, 89 schemas) plus live unauthenticated header
+  observation against https://brutus.icontainers.com on 2026-08-17. iContainers publishes no conventions,
+  integration-guide or "getting started" prose — developer.icontainers.com is a Redocly reference with no
+  info.description — so everything here is derived from the contract and from observed responses.
+docs: null
+authentication:
+  style: bearer token
+  scheme: http bearer, bearerFormat JWT
+  header: 'Authorization: Bearer <jwt>'
+  applied: 'per-operation (every one of the 15 operations declares security: [{bearerAuth: []}]); no global security block'
+  token_issuance: not documented — no token endpoint, no OAuth discovery document, no self-serve key page
+  detail: authentication/icontainers-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    NO idempotency contract. The string "idempoten" does not appear anywhere in the OpenAPI, there is no
+    Idempotency-Key parameter or header on any operation, and no request-deduplication behaviour is
+    documented. This matters most on POST /api/v1/rates/{rateUuid}/book (BookRate), which returns 202
+    Accepted with a new bookingUuid and creates a real freight booking — a retried or replayed call after a
+    timeout or a 500 has no safe-retry guarantee. Recorded as an absence; no Idempotency pointer is wired
+    in apis.yml.
+pagination:
+  supported: false
+  style: null
+  note: >-
+    No pagination anywhere in the contract — no page/cursor/offset/limit parameters on any operation. The
+    two collection-returning operations are place searches (/api/v1/locations/maritime/places and
+    /api/v1/locations/aerial/places), which take a required free-text `term` and return an unbounded,
+    unpaged object of cities/postalCodes/seaPorts (maritime) or cities/airports (aerial). A quote returns
+    its full `rates` array inline with no paging.
+field_expansion:
+  supported: false
+  note: No expand/fields/include parameters; responses are fixed-shape.
+metadata:
+  supported: false
+  note: >-
+    No customer-defined metadata bag. The closest client-supplied correlation fields are the booking
+    `addresses` map (shipper/consignee/billing) and `bookingDetails.commodity`.
+envelope:
+  style: single-key data wrapper
+  note: >-
+    Most successful responses wrap the payload in a `data` property (BookingResource, BookRateResource,
+    BookingTrackAndTraceResource, RateCalculatePricesResource, SearchMaritimePlaces, SearchAerialPlaces,
+    CreateQuoteResource all have `data`). This is applied inconsistently: CreateQuoteResource uses an
+    allOf that both references FclQuote AND declares a `data` oneOf of FclQuote/LclQuote/AirQuote, which is
+    ambiguous to generate against.
+  success_codes:
+    '200': read operations
+    '201': document upload (empty body — no schema declared)
+    '202': BookRate (asynchronous — returns only the new bookingUuid)
+async:
+  supported: true
+  pattern: accepted-then-poll
+  note: >-
+    POST /api/v1/rates/{rateUuid}/book returns 202 with AsyncBooking = {bookingUuid}. There is no webhook,
+    callback or event surface in the contract, so the only way to learn the outcome is to poll
+    GET /api/v1/bookings/{bookingUuid}/details (status enum PREBOOKING | REQUESTED | PENDING | CANCELED |
+    DONE) and GET /api/v1/bookings/{bookingUuid}/trackAndTrace (ETA/ETD/ATA/ATD + the same status enum).
+request_tracing:
+  supported: false
+  request_id_header: null
+  note: >-
+    No request-id/correlation header is documented or returned. Observed response headers on
+    brutus.icontainers.com are limited to date, content-type, server (Apache/2.4.66 Debian),
+    x-powered-by (PHP/8.4.17), cache-control, x-ratelimit-*, access-control-allow-origin.
+versioning:
+  scheme: uri-path
+  current: v1
+  note: >-
+    Two path prefixes coexist — /api/v1/* for the account-scoped surface and /tenant/v1/* for a single
+    tenant document-fetch operation (GetDocumentTenant). info.version is 1.0.0. No version header, no
+    dated version train, no published version policy.
+  detail: lifecycle/icontainers-lifecycle.yml
+rate_limiting:
+  signaled: true
+  headers: [X-RateLimit-Limit, X-RateLimit-Remaining]
+  limit: 60 requests / 60 seconds (measured)
+  documented: false
+  detail: rate-limits/icontainers-rate-limits.yml
+errors:
+  format: laravel-validation (not RFC 9457)
+  detail: errors/icontainers-problem-types.yml
+cors:
+  access_control_allow_origin: '*'
+  observed: true
+  note: Observed on live 401 responses from both brutus and brutus-dev.
+identifiers:
+  style: UUID v4 for quotes, rates and bookings; opaque long token strings for document ids
+  examples:
+    quote: 74e44664-6499-4fd2 (from Quote.quoteOnlineUrl example)
+    booking: 918f07a7-14b3-4587-aa46-69f9089dd663
+    document: opaque 88-character token
+localization:
+  supported: true
+  note: '`lang` is accepted on booking requests with enum [es_ES, en_US]; Quote.lang echoes it back.'
+currency:
+  supported: true
+  note: '`currency` is required on BookRateRequest (example EUR); Money/Price schemas carry currency alongside amount.'
+audience_extension:
+  x-audience: true
+  note: >-
+    Tags and schemas carry a non-standard `x-audience` extension with the values velocity, xhipment and
+    tenant. developer.icontainers.com serves three Redocly builds filtered by it: / (all, 15 operations),
+    /xhipment/ (12 operations) and /tenant/ (which is a DIFFERENT product — see the ownership note in
+    conformance/icontainers-conformance.yml).

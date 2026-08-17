@@ -1,0 +1,34 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  npm registry search, PyPI, Packagist, RubyGems, crates.io, NuGet, Maven Central, the GitHub user/org
+  namespace, developer.icontainers.com and icontainers.com — searched 2026-08-17
+package_count: 0
+official_sdk_count: 0
+note: >-
+  iContainers ships NO client libraries. Eight public registries were searched and none returned a
+  first-party iContainers package; the developer portal (developer.icontainers.com) is a Redocly reference
+  with no SDK, snippet or download section; and https://github.com/iContainers is a personal GitHub account
+  with 0 public repositories (created 2015-04-06). Because no official SDK exists, NO `SDKs` pointer is
+  wired in apis.yml — the sdk_count checks are honestly unmet. Consumers must hand-roll HTTP against the
+  OpenAPI or generate a client from it themselves.
+packages: []
+registries_searched:
+- {registry: npm, query: icontainers, endpoint: 'https://registry.npmjs.org/-/v1/search?text=icontainers', results: 0, version: null}
+- {registry: pypi, query: icontainers, endpoint: 'https://pypi.org/pypi/icontainers/json', status: 404, version: null}
+- {registry: packagist, query: icontainers, results: 2584, first_party_matches: 0, note: 'all hits are generic PHP dependency-injection "container" packages (laminas/laminas-di, zendframework/zend-di, ...)', version: null}
+- {registry: rubygems, query: icontainers, results: 0, version: null}
+- {registry: crates.io, query: icontainers, results: 8, first_party_matches: 0, note: 'unrelated container/OCI crates', version: null}
+- {registry: nuget, query: icontainers, results: 0, version: null}
+- {registry: maven-central, query: icontainers, results: 0, version: null}
+- {registry: pkg.go.dev, query: icontainers, results: 0, version: null}
+other_distribution:
+  github: {url: 'https://github.com/iContainers', type: User, public_repos: 0, note: 'empty personal account, not an organization — no GitHubOrganization pointer wired'}
+  cdn: null
+  postman: {found: false, note: 'no first-party iContainers workspace or collection in Postman public search'}
+generator_alternative:
+  note: >-
+    openapi/icontainers-brutus-openapi.yml is a complete OpenAPI 3.0.0 document with 89 named schemas, so a
+    client can be generated from it. Two of the 15 operationIds are machine-generated MD5-style hashes
+    (f7652b9cd80cf6ebb58789309b5420bd and 34de8aa5b349a2047b75f06e974d840c on the two place-search
+    operations), which will produce unusable method names in any generated SDK — worth reporting to the provider.

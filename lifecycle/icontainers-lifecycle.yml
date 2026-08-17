@@ -1,0 +1,68 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://developer.icontainers.com/ (Redocly reference, HTTP 200), https://www.icontainers.com/ footer +
+  sitemap, and openapi/icontainers-brutus-openapi.yml — searched/probed 2026-08-17
+note: >-
+  iContainers publishes a versioned API but no lifecycle policy of any kind. There is no changelog page
+  (https://www.icontainers.com/changelog/ 404), no status page (https://www.icontainers.com/status/ 404 and
+  status.icontainers.com does not resolve to a reachable HTTPS service), no deprecation or sunset policy, no
+  SLA and no roadmap. No StatusPage, Deprecation or ChangeLog pointer is wired in apis.yml because none of
+  those pages exist — this file records their absence.
+versioning:
+  scheme: uri-path
+  current: v1
+  info_version: 1.0.0
+  prefixes:
+  - /api/v1
+  - /tenant/v1
+  docs: null
+  policy_published: false
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: 'RFC 8594 Sunset / Deprecation headers are neither documented nor declared; no operation carries deprecated: true'
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: null
+  published: false
+  evidence:
+  - {url: 'https://www.icontainers.com/status/', status: 404}
+  - {host: status.icontainers.com, finding: 'resolves to CloudFront but no HTTPS service answered (curl exit 000, no usable certificate)'}
+changelog:
+  url: null
+  published: false
+  evidence:
+  - {url: 'https://www.icontainers.com/changelog/', status: 404}
+roadmap:
+  url: null
+  published: false
+environments:
+- name: production
+  url: https://brutus.icontainers.com
+  declared_in: openapi servers[0]
+  description: Production server
+- name: development
+  url: https://brutus-dev.icontainers.com
+  declared_in: openapi servers[1]
+  description: Developing server
+support:
+  api_contact: devsupport@icontainers.com
+  source: openapi info.contact.email
+  human_support: https://www.icontainers.com/help/
+license:
+  name: private
+  url: https://www.icontainers.com
+  source: openapi info.license
+  note: 'the contract is published for reading but licensed private — API access is sales-gated'
+gaps:
+- No changelog, so a consumer cannot tell when the contract last changed.
+- No status page, so there is no operational transparency surface.
+- No deprecation policy and no Sunset/Deprecation header support.
+- The developer portal is not linked from the marketing site or any sitemap; it is discoverable only by guessing the hostname.

@@ -1,0 +1,86 @@
+generated: '2026-08-17'
+method: derived
+source: >-
+  openapi/icontainers-brutus-openapi.yml, live probes of brutus.icontainers.com, plus a search of
+  icontainers.com for a security/trust/compliance page (all 404) — 2026-08-17
+note: >-
+  Standards posture derived from the contract and observed behaviour. iContainers publishes NO compliance
+  program — /security/, /trust/ and /compliance/ all return 404, there is no trust center, no named
+  certification (no SOC 2, ISO 27001, PCI DSS, HIPAA or FedRAMP claim anywhere on the site) and no
+  security.txt — so NO Compliance pointer is wired in apis.yml. The only cross-cutting standards this API
+  meets are OpenAPI 3.0.0 and JWT bearer auth.
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: 'openapi: 3.0.0 with 15 paths, 15 operations, 89 component schemas, published at developer.icontainers.com'
+- id: openapi-3.1
+  conforms: false
+  evidence: 'contract is pinned at 3.0.0'
+- id: jwt-rfc7519
+  conforms: true
+  evidence: 'components.securitySchemes.bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}'
+- id: oauth2
+  conforms: false
+  evidence: 'no oauth2 securityScheme, no token endpoint, no /.well-known/oauth-authorization-server (404 on every host)'
+- id: oidc
+  conforms: false
+  evidence: '/.well-known/openid-configuration returns 404 on every host'
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: '422 uses the Laravel validation envelope (message + errors map); 401/403/404/500 declare no media type or schema at all'
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: '/.well-known/security.txt returns 404 on www, brutus, brutus-dev, developer and api hosts'
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: '/.well-known/api-catalog returns 404 on every host'
+- id: rfc8594-sunset
+  conforms: false
+  evidence: 'no Sunset or Deprecation header documented or declared; no deprecation policy page'
+- id: rfc6749-idempotency
+  conforms: false
+  evidence: 'no idempotency key on any operation, including the booking-creating POST /api/v1/rates/{rateUuid}/book'
+- id: ratelimit-headers
+  conforms: partial
+  evidence: >-
+    returns the de-facto X-RateLimit-Limit / X-RateLimit-Remaining pair (60 per 60s, measured) but not the
+    IETF draft RateLimit / RateLimit-Policy fields, and declares no 429 response in the contract
+- id: pagination
+  conforms: false
+  evidence: 'no page/cursor/offset/limit parameter anywhere; place-search results are returned unpaged'
+- id: asyncapi
+  conforms: false
+  evidence: 'no event, webhook, streaming or callback surface exists — not applicable rather than missing'
+- id: json-api
+  conforms: false
+  evidence: 'single-key `data` wrapper on most responses, but no JSON:API media type, links, included or errors objects'
+- id: unlocode
+  conforms: partial
+  evidence: 'UN/LOCODE-shaped port codes appear in schema examples (originRoutingPort example ESBCN) but the field is a free string with no format constraint'
+- id: dcsa
+  conforms: false
+  evidence: >-
+    no alignment with DCSA (Digital Container Shipping Association) track-and-trace or booking standards —
+    the track-and-trace payload is a bespoke five-field object (ETA/ETD/ATA/ATD + status), not a DCSA event model
+compliance:
+  program_published: false
+  certifications: []
+  evidence:
+  - {url: 'https://www.icontainers.com/security/', status: 404}
+  - {url: 'https://www.icontainers.com/trust/', status: 404}
+  - {url: 'https://www.icontainers.com/compliance/', status: 404}
+  - {url: 'https://www.icontainers.com/.well-known/security.txt', status: 404}
+  privacy:
+    gdpr_relevant: true
+    privacy_policy: https://www.icontainers.com/us/privacy-policy/
+    cookie_policy: https://www.icontainers.com/cookie-policy/
+    note: 'a Spain-headquartered operator with a published privacy and cookie policy, but no GDPR/DPA compliance page and no processor documentation for API consumers'
+ownership_note: >-
+  developer.icontainers.com serves three Redocly builds, and only two of them are iContainers'. / and
+  /xhipment/ are the Brutus API (info.title "Brutus API", servers brutus.icontainers.com and
+  brutus-dev.icontainers.com, contact devsupport@icontainers.com, info.x-logo the iContainers logo) — this
+  repo's spec. /tenant/ is a DIFFERENT product: info.title "Velocity API", servers api.velocityos.tech and
+  api.testing.velocityos.tech, contact help@velocityos.ai, 9 DSV-prefixed quote operations. iContainers'
+  own page https://www.icontainers.com/powered-by-velocityos-ai/ describes VelocityOS.ai as the third-party
+  technology platform that "powers the operational and intelligence layer" behind iContainers, so that
+  contract belongs to VelocityOS and was deliberately NOT saved to this repo. It is a separate provider lead.

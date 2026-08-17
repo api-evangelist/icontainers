@@ -1,0 +1,33 @@
+generated: '2026-08-17'
+method: generated
+source: openapi/icontainers-brutus-openapi.yml
+note: >-
+  Packaged Agent Skills for the iContainers Brutus API. Every operationId referenced below was verified
+  verbatim against the published OpenAPI — including the two machine-generated hash ids the provider uses
+  for its place-search operations. iContainers publishes no AGENTS.md or skill files of its own; these are
+  API Evangelist generations grounded in the real contract plus the conventions, errors and rate-limit
+  artifacts in this repo.
+skills:
+- file: icontainers-quote-ocean-freight.md
+  name: Quote ocean freight with iContainers
+  api: openapi/icontainers-brutus-openapi.yml
+  operations: [34de8aa5b349a2047b75f06e974d840c, FclQuote, LclQuote, GetQuote]
+- file: icontainers-quote-air-freight.md
+  name: Quote air and LTL freight with iContainers
+  api: openapi/icontainers-brutus-openapi.yml
+  operations: [f7652b9cd80cf6ebb58789309b5420bd, AirQuote, LtlQuote, GetQuote]
+- file: icontainers-book-and-track-shipment.md
+  name: Book a rate and track the shipment
+  api: openapi/icontainers-brutus-openapi.yml
+  operations: [RateCalculatePrices, BookRate, GetBookingDetails, GetBookingTrackAndTracer]
+- file: icontainers-exchange-booking-documents.md
+  name: Exchange booking documents
+  api: openapi/icontainers-brutus-openapi.yml
+  operations: [AddDocumentForBooking, GetBookingDocument, GetDocument, GetDocumentTenant]
+coverage:
+  operations_total: 15
+  operations_covered: 15
+  uncovered: []
+  note: >-
+    All 15 published operations are covered across the four skills, with GetQuote deliberately shared by
+    both quoting skills.

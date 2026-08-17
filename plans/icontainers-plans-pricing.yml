@@ -1,0 +1,33 @@
+generated: '2026-08-17'
+method: searched
+source: >-
+  https://www.icontainers.com/ (footer + navigation), https://www.icontainers.com/solutions/freight-forwarding-software/,
+  https://www.icontainers.com/contact-us/, https://developer.icontainers.com/ — searched 2026-08-17
+plan_count: 0
+note: >-
+  iContainers publishes NO plans or pricing tiers for API access, and no pricing page at all:
+  https://www.icontainers.com/pricing/ returns HTTP 404 and no pricing URL appears anywhere in the site
+  footer, navigation, sitemap or the developer portal. The commercial model is transactional rather than
+  subscription — a shipper gets an instant per-shipment freight quote from the ocean/air freight
+  calculators and pays per booking, so there is no seat, quota or request-tier price to record. API access
+  itself is sales-gated: the freight-forwarding-software solution page says only "Use the freight portal or
+  directly integrate our APIs" and routes every reader to /contact-us/ or GET A DEMO; the Brutus API
+  contract is licensed `private` in its own OpenAPI (info.license.name = "private") and names
+  devsupport@icontainers.com as the only contact. An honest zero, not an unchecked field.
+plans: []
+evidence:
+- url: https://www.icontainers.com/pricing/
+  status: 404
+- url: https://www.icontainers.com/solutions/freight-forwarding-software/
+  status: 200
+  finding: 'mentions "Use the freight portal or directly integrate our APIs" with no pricing and no developer signup'
+- url: https://developer.icontainers.com/
+  status: 200
+  finding: 'Redocly reference only; info.license = "private", no pricing, no plan tiers, no self-serve signup'
+quote_model:
+  type: per-shipment transactional quote
+  self_serve: true
+  surfaces:
+  - https://www.icontainers.com/ocean-freight-calculator/
+  - https://www.icontainers.com/calculator/air-freight-calculator/
+  api_access: sales-gated (contact devsupport@icontainers.com / /contact-us/)

@@ -1,0 +1,128 @@
+generated: '2026-08-17'
+method: derived
+source: openapi/icontainers-brutus-openapi.yml
+format: laravel-validation
+docs: null
+note: >-
+  Derived from the 4xx/5xx responses declared on all 15 Brutus API operations. The API does NOT use RFC
+  9457 problem+json: only the 422 carries a schema, and that schema is the Laravel validation envelope
+  (`message` string + `errors` object keyed by field name, each value an array of message strings). The
+  401, 403, 404 and 500 responses declare a description but NO media type and NO schema, so a client
+  cannot know their body shape from the contract. An observed live 401 from
+  https://brutus.icontainers.com returned `content-type: application/json` with an empty JSON object
+  `{}` — no error code, no message, no type URI. No 429 is declared on any operation even though the API
+  returns X-RateLimit-* headers (see rate-limits/icontainers-rate-limits.yml). iContainers publishes no
+  error reference page to enrich these titles or remediation from.
+envelope:
+  validation:
+    media_type: application/json
+    schema: 422Response
+    fields:
+    - {name: message, type: string, example: The given data was invalid.}
+    - {name: errors, type: object, description: 'map of field name -> array of message strings'}
+    example_shape: '{"message":"The given data was invalid.","errors":{"someProperty":["The some property field is required."]}}'
+  other_4xx_5xx:
+    media_type: null
+    schema: null
+    observed_401_body: '{}'
+    note: 'unschematized — 401/403/404/500 declare a description only'
+problems:
+- status: 401
+  title: Authentication required
+  schema: null
+  media_type: null
+  remediation: Send a valid JWT in the Authorization bearer header (see authentication/icontainers-authentication.yml).
+  operations:
+  - AddDocumentForBooking
+  - BookRate
+  - FclQuote
+  - LclQuote
+  - AirQuote
+  - LtlQuote
+  - GetBookingDetails
+  - GetBookingDocument
+  - GetBookingTrackAndTracer
+  - GetQuote
+  - RateCalculatePrices
+  - GetDocumentTenant
+  - GetDocument
+  - f7652b9cd80cf6ebb58789309b5420bd
+  - 34de8aa5b349a2047b75f06e974d840c
+- status: 403
+  title: User is not the owner of the booking
+  schema: null
+  media_type: null
+  remediation: >-
+    Bookings, quotes and documents are scoped to the authenticated account. Do not retry with the same
+    token; the resource belongs to another account.
+  operations:
+  - AddDocumentForBooking
+  - FclQuote
+  - LclQuote
+  - AirQuote
+  - LtlQuote
+  - GetBookingDetails
+  - GetBookingDocument
+  - GetBookingTrackAndTracer
+- status: 404
+  title: Resource not found
+  schema: null
+  media_type: null
+  variants:
+  - {operation: AddDocumentForBooking, description: Booking not found}
+  - {operation: GetBookingDocument, description: Document not found}
+  - {operation: GetDocument, description: Document not found}
+  - {operation: GetDocumentTenant, description: Document not found}
+  remediation: Verify the bookingUuid / documentId; UUIDs come from the quote and booking responses.
+  operations:
+  - AddDocumentForBooking
+  - GetBookingDocument
+  - GetDocument
+  - GetDocumentTenant
+- status: 422
+  title: Invalid Data
+  schema: 422Response
+  media_type: application/json
+  remediation: >-
+    Read the per-field `errors` map and correct the offending request properties. Common causes in this
+    contract are a `cargoReadyDate` that is not today or in the future, a `commodity` outside the declared
+    enum, and missing `servicesSelected` booleans.
+  operations:
+  - AddDocumentForBooking
+  - BookRate
+  - FclQuote
+  - LclQuote
+  - AirQuote
+  - LtlQuote
+  - GetBookingDetails
+  - GetBookingDocument
+  - GetBookingTrackAndTracer
+  - GetQuote
+  - RateCalculatePrices
+  - GetDocumentTenant
+  - GetDocument
+  - f7652b9cd80cf6ebb58789309b5420bd
+  - 34de8aa5b349a2047b75f06e974d840c
+- status: 500
+  title: Internal server error
+  schema: null
+  media_type: null
+  remediation: Retry with backoff. There is no idempotency key in this contract, so retrying BookRate risks a duplicate booking.
+  operations:
+  - AddDocumentForBooking
+  - BookRate
+  - FclQuote
+  - LclQuote
+  - AirQuote
+  - LtlQuote
+  - GetBookingDetails
+  - GetBookingDocument
+  - GetBookingTrackAndTracer
+  - GetQuote
+  - RateCalculatePrices
+  - f7652b9cd80cf6ebb58789309b5420bd
+  - 34de8aa5b349a2047b75f06e974d840c
+gaps:
+- No 429 declared despite X-RateLimit-* headers being returned in production.
+- 401/403/404/500 have no media type or schema; only 422 is machine-readable.
+- No error codes, no type URIs, no documented error reference page.

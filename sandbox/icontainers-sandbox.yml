@@ -1,0 +1,56 @@
+generated: '2026-08-17'
+method: probed
+source: >-
+  openapi/icontainers-brutus-openapi.yml servers[] plus a live probe of
+  https://brutus-dev.icontainers.com/api/v1/quotes/00000000-0000-0000-0000-000000000000 on 2026-08-17
+note: >-
+  iContainers publishes a second, non-production API host in its own OpenAPI servers[] block —
+  https://brutus-dev.icontainers.com, labelled "Developing server" — and that host is live: it answers with
+  the same JSON 401, the same Apache/PHP 8.4 banner and the same X-RateLimit-Limit: 60 headers as
+  production. That is a real, provider-published test environment. What is NOT published is any way to use
+  it: there are no test credentials, no test-mode token prefix, no magic/fixture values, no sample port
+  codes reserved for testing, no time simulation, no seeded bookings and no testing documentation of any
+  kind (developer.icontainers.com is a spec-only Redocly build with no info.description and no guides).
+  Nothing here is invented — the artifact records the environment that exists and states plainly that the
+  credentials to reach it are gated behind devsupport@icontainers.com.
+environments:
+- name: production
+  url: https://brutus.icontainers.com
+  declared_in: 'openapi servers[0] ("Production server")'
+  live: true
+  observed_status: 401 on unauthenticated request
+- name: development
+  url: https://brutus-dev.icontainers.com
+  declared_in: 'openapi servers[1] ("Developing server")'
+  live: true
+  observed_status: 401 on unauthenticated request
+  observed_headers: {x-ratelimit-limit: '60', x-ratelimit-remaining: '59', server: 'Apache/2.4.66 (Debian)', x-powered-by: 'PHP/8.4.17'}
+test_vs_live:
+  separated_by: hostname
+  key_prefix: null
+  mode_header: null
+  note: >-
+    Separation is by host only — there is no test-mode key prefix and no mode switch on a single host, so a
+    client distinguishes test from live purely by base URL. The same bearerAuth JWT scheme applies to both;
+    whether a token is valid on both hosts is not documented.
+credentials:
+  self_serve: false
+  signup_url: null
+  how_to_obtain: 'contact devsupport@icontainers.com (the only contact in the contract) or https://www.icontainers.com/contact-us/'
+test_values:
+  cards: []
+  bank_accounts: []
+  identifiers: []
+  note: 'none published — no magic test values of any kind appear in the contract or on the site'
+time_simulation:
+  supported: false
+fixtures_and_triggers:
+  supported: false
+  note: >-
+    No fixture, trigger or simulation tooling. Because BookRate is asynchronous (202 + bookingUuid, then
+    poll), a developer cannot force a booking through the PREBOOKING -> REQUESTED -> PENDING -> DONE status
+    progression on demand; there is no documented way to drive state.
+gaps:
+- No test credentials or self-serve sandbox signup.
+- No test data (no reserved ports, routes, commodities or bookings).
+- No documented parity statement between brutus-dev and brutus.

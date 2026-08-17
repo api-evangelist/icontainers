@@ -1,0 +1,115 @@
+# iContainers
+
+> iContainers is a digital freight forwarder founded in 2007 in Barcelona, now part of Agility Logistics (present in 100+ countries). The platform helps thousands of companies and individuals move merchandise internationally across 250,000+ ocean trade routes to 300+ destinations worldwide. iContainers embeds artificial intelligence throughout its platform to make international freight simpler, faster, and more reliable, with AI-powered systems automating quoting, pricing, sales, and customer interactions. Services include ocean freight (FCL and LCL), air freight, air express, customs clearance, and white-label freight forwarding software.
+
+iContainers targets SMEs and individuals who have limited logistics infrastructure and experience with overseas shipping. The online freight quoting platform simplifies ocean freight quoting and booking management, allowing users to search from over 500,000 air and ocean freight quotes and get the latest international freight shipping rates from any carrier in seconds. Customers can book cargo, acquire insurance, customize incoterms, manage multiple shipments, and handle all documentation from a single user area. In 2019, iContainers joined forces with Shipa Freight, expanding their footprint across the Middle East and beyond.
+
+## Services
+
+- [Air Freight](https://www.icontainers.com/service/air-freight/): Air forwarding, air freight, and air cargo shipping for boxes or loose cargo worldwide with instant online quotes, transparent pricing, and expert customs support
+- [Air Express](https://www.icontainers.com/service/air-express/): Fast global parcel and package delivery in 1-4 business days for documents, parcels, and pallets with real-time tracking
+- [DAP Customs & Delivery US](https://www.icontainers.com/service/dap-customs-delivery-us/): Customs clearance and delivery solutions for US imports under DAP Incoterm
+
+### Air Freight by Country
+
+- [Air Freight Australia](https://www.icontainers.com/service/air-freight/australia/): Air freight shipping from/to Australia
+- [Air Freight Germany](https://www.icontainers.com/service/air-freight/germany/): Air freight shipping from/to Germany
+- [Air Freight South Korea](https://www.icontainers.com/service/air-freight/south-korea/): Air freight shipping from/to South Korea
+- [Air Freight United States](https://www.icontainers.com/service/air-freight/united-states/): Air freight shipping from/to United States
+- [Air Freight UAE](https://www.icontainers.com/service/air-freight/united-arab-emirates/): Air freight shipping from/to United Arab Emirates
+- [Air Freight Dominican Republic](https://www.icontainers.com/service/air-freight/dominican-republic/): Air freight shipping from/to Dominican Republic
+- [Air Freight El Salvador](https://www.icontainers.com/service/air-freight/el-salvador/): Air freight shipping from/to El Salvador
+
+### Air Express by Country
+
+- [Air Express United States](https://www.icontainers.com/service/air-express/united-states/): Air express package delivery from/to the United States
+- [Air Express UAE](https://www.icontainers.com/service/air-express/united-arab-emirates/): Air express package delivery from/to United Arab Emirates
+- [Air Express Argentina](https://www.icontainers.com/service/air-express/argentina/): Air express package delivery from/to Argentina
+- [Air Express South Korea](https://www.icontainers.com/service/air-express/south-korea/): Air express package delivery from/to South Korea
+- [Air Express Costa Rica](https://www.icontainers.com/service/air-express/costa-rica/): Air express package delivery from/to Costa Rica
+- [Air Express El Salvador](https://www.icontainers.com/service/air-express/el-salvador/): Air express package delivery from/to El Salvador
+
+## Solutions
+
+- [Import/Export Businesses](https://www.icontainers.com/solutions/import-export-businesses/): Tailored solutions for international trade with deep expertise in global commerce
+- [Freight Forwarding Software](https://www.icontainers.com/solutions/freight-forwarding-software/): White-label freight portal for internal teams and customers to manage freight activities online, configurable to brand guidelines with API integration
+- [Moving Companies](https://www.icontainers.com/solutions/moving-companies/): Scalable solutions for international moving companies with a fully digital freight platform for quotes, booking, and documentation
+- [Moving Individuals](https://www.icontainers.com/solutions/moving-individuals/): Personalized relocation services for individuals moving internationally
+- [Customs Broker](https://www.icontainers.com/solutions/customs-broker/): Expert customs brokerage services to simplify import/export processes and ensure compliance
+- [AI-Powered Freight Shipping](https://www.icontainers.com/solutions/ai-powered-freight-shipping/): AI-powered systems automating quoting, pricing, and customer interactions for faster, more accurate freight decisions
+- [Freight Agent](https://www.icontainers.com/solutions/freight-agent/): Ultimate solution for freight agents to manage and grow their business
+
+## Calculators & Tools
+
+- [All Calculators](https://www.icontainers.com/calculator/): Online shipping calculators for instant freight rate quotes
+- [Ocean Freight Calculator](https://www.icontainers.com/ocean-freight-calculator/): Compare over 250,000 rates covering 40,000+ routes worldwide for FCL and LCL ocean freight
+- [Freight Cost Calculator](https://www.icontainers.com/calculator/freight-cost-calculator/): Calculate overall freight costs online
+- [Air Freight Calculator](https://www.icontainers.com/calculator/air-freight-calculator/): Calculate air freight shipping costs instantly
+- [Cubic Meter Calculator (CBM)](https://www.icontainers.com/cubic-meter-calculator-cbm/): Calculate cubic meters for shipment volume
+
+## Resources & Guides
+
+- [Freight Resources](https://www.icontainers.com/freight-resources/): Central hub for calculators, e-books, shipping documents, and freight guides
+- [Global Freight Guide](https://www.icontainers.com/global-freight-guide/): Comprehensive air and ocean freight international shipping guide with trade lanes, export/import guides
+- [Shipping Glossary](https://www.icontainers.com/glossary/): Maritime and port glossary with key shipping terms and acronyms
+- [Blog](https://www.icontainers.com/blog/): Shipping insights, industry news, and logistics best practices
+- [About Us](https://www.icontainers.com/about-us/): Company background, mission, and history
+
+## Help Center - Shipping Fundamentals
+
+- [Help Center](https://www.icontainers.com/help/): Main support hub with guides, FAQs, and how-tos
+- [How to Use iContainers](https://www.icontainers.com/help/how-to-use-icontainers/): Step-by-step guide to using the platform
+- [How to Quote and Book Ocean Freight](https://www.icontainers.com/help/how-to-quote-and-book-ocean-freight-online/): Guide to quoting and booking ocean freight online
+- [What is Freight Forwarding](https://www.icontainers.com/help/what-is-freight-forwarding/): Comprehensive guide on freight forwarding roles and responsibilities
+- [Included Services in Rates](https://www.icontainers.com/help/what-do-our-container-shipping-rates-include/): What iContainers shipping rates include
+- [Your Account and Dashboard](https://www.icontainers.com/help/your-icontainers-account-and-personalized-shipping-dashboard/): Guide to using your personalized shipping dashboard
+
+## Help Center - Container Guides
+
+- [40 Foot Container](https://www.icontainers.com/help/40-foot-container/): Dimensions, capacity, and specifications of 40ft containers
+- [20 Foot Container](https://www.icontainers.com/help/20-foot-container/): Dimensions, capacity, and specifications of 20ft containers
+- [40 Foot High Cube Container](https://www.icontainers.com/help/40-foot-high-cube-container/): Dimensions and specifications of 40ft high cube containers
+- [How Many Pallets Fit in a Container](https://www.icontainers.com/help/how-many-pallets-fit-in-a-container/): Pallet capacity guide for 20ft and 40ft containers
+- [FCL and LCL Explained](https://www.icontainers.com/help/lcl-vs-fcl/): Difference between Full Container Load and Less than Container Load shipping
+
+## Help Center - Incoterms
+
+- [Incoterms Guide](https://www.icontainers.com/help/incoterms/): Complete guide to all Incoterms and what they mean
+- [FOB Incoterm](https://www.icontainers.com/help/incoterms/fob/): Free on Board - use, meaning, and responsibilities
+- [CIF vs CIP Explained](https://www.icontainers.com/help/cif-vs-cip-explained/): Comparison of CIF and CIP Incoterms with use cases
+- [DAP Incoterm](https://www.icontainers.com/help/incoterms/dap/): Delivered at Place - use, meaning, and responsibilities
+- [FCA Incoterm](https://www.icontainers.com/help/incoterms/fca/): Free Carrier - definition and use cases
+- [EXW Incoterm](https://www.icontainers.com/help/incoterms/exw/): Ex Works - definition and responsibilities
+- [DDP Incoterm](https://www.icontainers.com/help/incoterms/ddp/): Delivery Duty Paid - definition and responsibilities
+- [CFR Incoterm](https://www.icontainers.com/help/incoterms/cfr/): Cost and Freight - use and meaning
+- [FAS Incoterm](https://www.icontainers.com/help/incoterms/fas/): Free Alongside Ship - use and meaning
+- [Best Incoterms for Buyers](https://www.icontainers.com/help/best-incoterms-for-buyers/): Guide to choosing the best Incoterms as a buyer
+- [Best Incoterms for Sellers](https://www.icontainers.com/help/best-incoterms-for-sellers/): Guide to choosing the best Incoterms as a seller
+
+## Help Center - Shipping Knowledge
+
+- [Shipping Documents](https://www.icontainers.com/help/shipping-documents/): Complete list of shipping documents needed for international freight
+- [Shipping Terms](https://www.icontainers.com/help/shipping-terms/): Key shipping terms and definitions glossary
+- [HS Codes](https://www.icontainers.com/help/hs-codes/): Guide to Harmonized System codes for customs classification
+- [What is Drayage](https://www.icontainers.com/help/what-is-drayage/): Drayage meaning, classification, and role in intermodal shipping
+- [Demurrage, Detention & Per Diem](https://www.icontainers.com/help/demurrage-detention-per-diem-shipping-delay-charges/): Guide to shipping delay charges and how to avoid them
+- [Terminal Handling Charges](https://www.icontainers.com/help/terminal-handling-charges/): What terminal handling charges are and how they affect shipping costs
+
+## Trade Lanes
+
+- [US to Brazil](https://www.icontainers.com/trade-lane/us-to-brazil/): Freight rates and shipping guide from US to Brazil
+- [US to Germany](https://www.icontainers.com/trade-lane/us-to-germany/): Freight rates and shipping guide from US to Germany
+- [US to Portugal](https://www.icontainers.com/trade-lane/us-to-portugal/): Freight rates and shipping guide from US to Portugal
+- [Italy to US](https://www.icontainers.com/trade-lane/italy-to-us/): Freight rates and shipping guide from Italy to US
+- [US to UK](https://www.icontainers.com/trade-lane/us-to-uk/): Freight rates and shipping guide from US to UK
+- [US to Spain](https://www.icontainers.com/trade-lane/us-to-spain/): Freight rates and shipping guide from US to Spain
+- [US to China](https://www.icontainers.com/trade-lane/us-to-china/): Freight rates and shipping guide from US to China
+- [China to India](https://www.icontainers.com/trade-lane/china-to-india/): Freight rates and shipping guide from China to India
+
+## Optional
+
+- [Incoterms Blog Post](https://www.icontainers.com/us/2013/07/18/incoterms/): What are Incoterms - detailed blog article
+- [Top 5 Shipping Documents](https://www.icontainers.com/us/2019/02/26/top-5-shipping-documents-all-shippers-should-be-familiar-with/): Essential shipping documents every shipper should know
+- [Australia Main Imports/Exports](https://www.icontainers.com/us/2020/01/15/australia-main-imports-exports/): Guide to what Australia imports and exports
+- [How to Import Goods to US](https://www.icontainers.com/us/2015/06/02/how-to-succeed-importing-goods-into-the-us/): Guide to successfully importing goods into the United States
+- [Shipa Freight and iContainers Merge](https://www.icontainers.com/us/2022/04/25/agility-shipa-freight-icontainers-merge/): News about the Agility, Shipa Freight, and iContainers merger

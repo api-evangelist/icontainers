@@ -1,0 +1,71 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the iContainers Brutus API
+  version: 1.0.0
+x-generated: '2026-08-17'
+x-method: generated
+x-source: openapi/icontainers-brutus-openapi.yml
+x-note: >-
+  Enhancements API Evangelist observed or derived that are NOT in the provider's published contract. The
+  original spec is never mutated — apply this overlay to add them. Every action below is grounded in a
+  measurement or a fact recorded elsewhere in this repo: the rate-limit headers were observed live, the
+  missing 429 is a real contract gap, and the two hashed operationIds are verbatim from the provider's spec.
+extends: openapi/icontainers-brutus-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/icontainers/
+    x-apievangelist-reviewed: '2026-08-17'
+    x-apievangelist-source: https://developer.icontainers.com/
+    x-apievangelist-extraction: >-
+      Recovered from the __redoc_state hydration payload of the Redocly build at
+      https://developer.icontainers.com/ — iContainers serves no raw openapi.json/yaml at any host.
+- target: $.info
+  update:
+    description: >-
+      Programmatic freight quoting and booking for iContainers. Create an FCL, LCL, air or LTL quote, read
+      its rates, price a rate with the services you want, book it, then poll the booking for status and
+      track-and-trace, and exchange documents. All operations require a JWT bearer token issued by
+      iContainers (contact devsupport@icontainers.com — there is no self-serve signup). The API returns
+      X-RateLimit-Limit/X-RateLimit-Remaining headers with a measured ceiling of 60 requests per 60 seconds.
+      Booking is asynchronous and has no idempotency key: a retried POST /api/v1/rates/{rateUuid}/book may
+      create a duplicate booking.
+- target: $.servers
+  update:
+  - url: https://brutus.icontainers.com
+    description: Production server
+    x-apievangelist-verified: '2026-08-17'
+  - url: https://brutus-dev.icontainers.com
+    description: Developing server
+    x-apievangelist-verified: '2026-08-17'
+    x-apievangelist-note: live and reachable, but no test credentials are published
+- target: $.paths['/api/v1/rates/{rateUuid}/book'].post
+  update:
+    x-agentic-access:
+      action-class: acting
+      consequence: physical
+      audit: required
+    x-apievangelist-note: >-
+      Creates a real freight booking and is asynchronous (202 + bookingUuid). No Idempotency-Key parameter
+      exists, so a client that retries after a timeout can double-book. Treat as non-retryable.
+- target: $.paths['/api/v1/locations/maritime/places'].get
+  update:
+    x-apievangelist-note: >-
+      operationId is the machine-generated hash 34de8aa5b349a2047b75f06e974d840c; a generated SDK will emit
+      an unusable method name. Suggested id: searchMaritimePlaces.
+- target: $.paths['/api/v1/locations/aerial/places'].get
+  update:
+    x-apievangelist-note: >-
+      operationId is the machine-generated hash f7652b9cd80cf6ebb58789309b5420bd; a generated SDK will emit
+      an unusable method name. Suggested id: searchAerialPlaces.
+- target: $.components.schemas.RateLimitHeaders
+  update:
+    description: Rate-limit headers observed on every Brutus API response, including 401s. Not declared in the published contract.
+    type: object
+    properties:
+      X-RateLimit-Limit:
+        type: integer
+        example: 60
+      X-RateLimit-Remaining:
+        type: integer
+        example: 59

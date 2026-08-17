@@ -1,0 +1,3972 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Brutus API",
+    "contact": {
+      "email": "devsupport@icontainers.com"
+    },
+    "license": {
+      "name": "private",
+      "url": "https://www.icontainers.com"
+    },
+    "version": "1.0.0",
+    "x-logo": {
+      "url": "https://icontainers-public.s3.us-east-1.amazonaws.com/images/iContainers+Logo.svg"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://brutus.icontainers.com",
+      "description": "Production server"
+    },
+    {
+      "url": "https://brutus-dev.icontainers.com",
+      "description": "Developing server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Bookings",
+      "description": "Bookings",
+      "x-audience": [
+        "velocity",
+        "xhipment"
+      ]
+    },
+    {
+      "name": "Places",
+      "description": "Places",
+      "x-audience": "velocity"
+    },
+    {
+      "name": "Quotes",
+      "description": "Quotes",
+      "x-audience": [
+        "velocity",
+        "xhipment"
+      ]
+    },
+    {
+      "name": "Rates",
+      "description": "Rates",
+      "x-audience": "velocity"
+    },
+    {
+      "name": "Documents",
+      "description": "Documents",
+      "x-audience": [
+        "velocity",
+        "tenant"
+      ]
+    },
+    {
+      "name": "Amazon",
+      "description": "Amazon"
+    }
+  ],
+  "paths": {
+    "/api/v1/bookings/{bookingUuid}/documents": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Upload a document for a booking",
+        "operationId": "AddDocumentForBooking",
+        "parameters": [
+          {
+            "name": "bookingUuid",
+            "in": "path",
+            "description": "Uuid of the booking",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          }
+        ],
+        "requestBody": {
+          "description": "Document to upload",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Bookings.AddDocumentForBookingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Document uploaded successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "User is not the owner of the booking"
+          },
+          "404": {
+            "description": "Booking not found"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/rates/{rateUuid}/book": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Book a rate",
+        "operationId": "BookRate",
+        "parameters": [
+          {
+            "name": "rateUuid",
+            "in": "path",
+            "description": "Uuid of the rate",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          }
+        ],
+        "requestBody": {
+          "description": "Book a rate by rateUuid",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookRateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookRateResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "type": "string",
+                  "example": "Unauthorized",
+                  "property": "message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/quotes/fcl": {
+      "post": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Create a new FCL Quote",
+        "operationId": "FclQuote",
+        "requestBody": {
+          "description": "New quote",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostFclQuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FclQuoteResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Shipment type not allowed for this application"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/quotes/lcl": {
+      "post": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Create a new LCL Quote",
+        "operationId": "LclQuote",
+        "requestBody": {
+          "description": "New quote",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostLclQuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LclQuoteResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Shipment type not allowed for this application"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/quotes/air": {
+      "post": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Create a new Air Quote",
+        "operationId": "AirQuote",
+        "requestBody": {
+          "description": "New quote",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostAirQuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirQuoteResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Shipment type not allowed for this application"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/quotes/ltl": {
+      "post": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Create a new Ltl Quote",
+        "operationId": "LtlQuote",
+        "requestBody": {
+          "description": "New quote",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostLtlQuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Shipment type not allowed for this application"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/bookings/{bookingUuid}/details": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Get booking details",
+        "operationId": "GetBookingDetails",
+        "parameters": [
+          {
+            "name": "bookingUuid",
+            "in": "path",
+            "description": "Uuid of the booking",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "User is not the owner of the booking"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/bookings/{bookingUuid}/documents/{documentId}": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Download booking document",
+        "operationId": "GetBookingDocument",
+        "parameters": [
+          {
+            "name": "bookingUuid",
+            "in": "path",
+            "description": "Uuid of the booking",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Id of the document",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "WcOADB4ddQXukNi6cvZVm6SLOrJUlNF5AGYFh-mbxHZNXKpMB8-QdC5AGsiBbJ6cIxFDMRHzb4glE3ngExtiTcdC"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingDocumentDownloadResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "User is not the owner of the booking"
+          },
+          "404": {
+            "description": "Booking or document not found"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/bookings/{bookingUuid}/trackAndTrace": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Get booking track and trace information",
+        "operationId": "GetBookingTrackAndTracer",
+        "parameters": [
+          {
+            "name": "bookingUuid",
+            "in": "path",
+            "description": "Uuid of the booking",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingTrackAndTraceResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "User is not the owner of the booking"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/quotes/{uuid}": {
+      "get": {
+        "tags": [
+          "Quotes"
+        ],
+        "summary": "Get Quote by Uuid",
+        "operationId": "GetQuote",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "Uuid of the quote",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateQuoteResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/rates/{rateUuid}/calculatePrices": {
+      "post": {
+        "tags": [
+          "Rates"
+        ],
+        "summary": "Calculate Prices for a Rate",
+        "operationId": "RateCalculatePrices",
+        "parameters": [
+          {
+            "name": "rateUuid",
+            "in": "path",
+            "description": "Uuid of the rate",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          }
+        ],
+        "requestBody": {
+          "description": "New quote",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostRateCalculatePricesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateCalculatePricesResource"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Problem with external Client"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": "velocity"
+      }
+    },
+    "/tenant/v1/documents/{documentId}": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Get document content by ID",
+        "operationId": "GetDocumentTenant",
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Document identifier in the format objectType.objectId.documentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "booking.918f07a7-14b3-4587-aa46-69f9089dd663.550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document file content",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Document not found"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "tenant",
+          "dsv"
+        ]
+      }
+    },
+    "/api/v1/documents/{documentId}": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Get document content by ID",
+        "operationId": "GetDocument",
+        "parameters": [
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Document identifier in the format objectType/objectId/documentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "booking/918f07a7-14b3-4587-aa46-69f9089dd663/550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document file content",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Document not found"
+          },
+          "422": {
+            "description": "Invalid Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity"
+        ]
+      }
+    },
+    "/api/v1/locations/aerial/places": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Search places for aerial transportation",
+        "description": "This method return valid results for aerial places to use in a aerial quotation later on",
+        "operationId": "f7652b9cd80cf6ebb58789309b5420bd",
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "description": "Term to search for places",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "example": "bar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information of the places",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchAerialPlaces"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Error in validation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    },
+    "/api/v1/locations/maritime/places": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Search places for maritime transportation options (FCL/LCL).",
+        "description": "This method return valid results for aerial places to use in a maritime (FCL/LCL) quotation later on",
+        "operationId": "34de8aa5b349a2047b75f06e974d840c",
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "description": "Term to search for places",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "example": "bar"
+          },
+          {
+            "name": "shipmentType",
+            "in": "query",
+            "description": "Shipment type, I.e FCL or LCL",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 3,
+              "minLength": 3,
+              "enum": [
+                "FCL",
+                "LCL"
+              ]
+            },
+            "example": "FCL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information of the places",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchMaritimePlaces"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Error in validation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Bookings.AddDocumentForBookingRequest": {
+        "required": [
+          "documentType",
+          "document"
+        ],
+        "properties": {
+          "documentType": {
+            "description": "Type of document",
+            "type": "string",
+            "enum": [
+              "CommercialInvoice",
+              "PackingList",
+              "Others"
+            ],
+            "example": "CommercialInvoice"
+          },
+          "document": {
+            "description": "Document file (PDF, CSV, or XLSX)",
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookRateRequest": {
+        "title": "BookRateRequest",
+        "required": [
+          "currency",
+          "servicesSelected",
+          "bookingDetails",
+          "optionalBillingItems"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "example": "EUR"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "es_ES",
+              "en_US"
+            ]
+          },
+          "servicesSelected": {
+            "$ref": "#/components/schemas/ServicesSelected"
+          },
+          "bookingDetails": {
+            "required": [
+              "cargoReadyDate",
+              "commodity"
+            ],
+            "properties": {
+              "cargoReadyDate": {
+                "description": "Date when the cargo is ready to be picked up. The date must be today or in the future.",
+                "type": "string",
+                "format": "date"
+              },
+              "commodity": {
+                "type": "string",
+                "enum": [
+                  "Regular Cargo",
+                  "Refrigerated",
+                  "Hazardous goods (DGR, IMO)",
+                  "Perishable",
+                  "Used Tires/Scrap",
+                  "Household Goods",
+                  "Livestock and Animals",
+                  "Explosives"
+                ]
+              }
+            },
+            "type": "object"
+          },
+          "optionalBillingItems": {
+            "description": "Property used to book optional additional services.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptionalBillingItemSelectionData"
+            }
+          },
+          "addresses": {
+            "description": "Optional addresses to associate with the booking. Each key is an address type (shipper, consignee, pickup, delivery, billing).",
+            "properties": {
+              "shipper": {
+                "$ref": "#/components/schemas/BookingAddressData"
+              },
+              "consignee": {
+                "$ref": "#/components/schemas/BookingAddressData"
+              },
+              "pickup": {
+                "$ref": "#/components/schemas/BookingAddressData"
+              },
+              "delivery": {
+                "$ref": "#/components/schemas/BookingAddressData"
+              },
+              "billing": {
+                "$ref": "#/components/schemas/BillingBookingAddressData"
+              }
+            },
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookRateResource": {
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AsyncBooking"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "AsyncBooking": {
+        "required": [
+          "bookingUuid"
+        ],
+        "properties": {
+          "bookingUuid": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "CreateQuoteRequest": {
+        "required": [
+          "currency",
+          "lang"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "default": "EUR",
+            "example": "EUR"
+          },
+          "lang": {
+            "type": "string",
+            "default": "en_US",
+            "example": "es_ES"
+          },
+          "commodityType": {
+            "type": "string",
+            "enum": [
+              "Regular Cargo",
+              "Refrigerated",
+              "Hazardous goods (DGR, IMO)",
+              "Perishable",
+              "Used Tires/Scrap",
+              "Household Goods",
+              "Livestock and Animals"
+            ],
+            "nullable": true
+          },
+          "maxExecutionTime": {
+            "description": "The number of seconds to wait for the quote to be processed.",
+            "type": "number",
+            "format": "int32",
+            "maximum": 180,
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "FclQuoteResource": {
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/FclQuote"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "LclQuoteResource": {
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LclQuote"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "AirQuoteResource": {
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AirQuote"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "Quote": {
+        "required": [
+          "uuid",
+          "quotedAt",
+          "currency",
+          "lang",
+          "rates",
+          "quoteType",
+          "quoteOnlineUrl",
+          "completed"
+        ],
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quotedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "lang": {
+            "type": "string",
+            "example": "es_ES"
+          },
+          "rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RateResource"
+            }
+          },
+          "quoteType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuoteType"
+              }
+            ]
+          },
+          "quoteOnlineUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://my.icontainers.com/quotes/74e44664-6499-4fd2"
+          },
+          "completed": {
+            "description": "Indicates if the quote is completed or not",
+            "type": "boolean"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "AerialQuoteLocationResponse": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "postalCode": "#/components/schemas/PostalCodeQuoteLocationResponse",
+            "airport": "#/components/schemas/AirportQuoteLocationResponse"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/PostalCodeQuoteLocationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/AirportQuoteLocationResponse"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "MaritimeQuoteLocationResponse": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "postalCode": "#/components/schemas/PostalCodeQuoteLocationResponse",
+            "port": "#/components/schemas/PortQuoteLocationResponse"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/PostalCodeQuoteLocationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/PortQuoteLocationResponse"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostalCodeQuoteLocationResponse": {
+        "required": [
+          "countryIsoCode",
+          "postalCode",
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "countryIsoCode": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PortQuoteLocationResponse": {
+        "required": [
+          "type",
+          "portIsoCode"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "portIsoCode": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "AirportQuoteLocationResponse": {
+        "required": [
+          "type",
+          "iata"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "iata": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "QuoteType": {
+        "type": "string",
+        "enum": [
+          "Instant quote",
+          "Partial instant quote",
+          "Not instant quote",
+          "Mixed quote"
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "AirQuote": {
+        "required": [
+          "origin",
+          "destination",
+          "items",
+          "shipmentType",
+          "isKnownShipper",
+          "cargoReadyDate"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Quote"
+          },
+          {
+            "properties": {
+              "origin": {
+                "$ref": "#/components/schemas/AerialQuoteLocationResponse"
+              },
+              "destination": {
+                "$ref": "#/components/schemas/AerialQuoteLocationResponse"
+              },
+              "items": {
+                "$ref": "#/components/schemas/DimensionedCargoItemCollection"
+              },
+              "shipmentType": {
+                "enum": [
+                  "AIR"
+                ]
+              },
+              "isKnownShipper": {
+                "type": "boolean"
+              },
+              "cargoReadyDate": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "LclQuote": {
+        "required": [
+          "origin",
+          "destination",
+          "items",
+          "shipmentType"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Quote"
+          },
+          {
+            "properties": {
+              "origin": {
+                "$ref": "#/components/schemas/MaritimeQuoteLocationResponse"
+              },
+              "destination": {
+                "$ref": "#/components/schemas/MaritimeQuoteLocationResponse"
+              },
+              "items": {
+                "$ref": "#/components/schemas/LCLItemCollection"
+              },
+              "shipmentType": {
+                "enum": [
+                  "LCL"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "FclQuote": {
+        "required": [
+          "origin",
+          "destination",
+          "items",
+          "shipmentType"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Quote"
+          },
+          {
+            "properties": {
+              "origin": {
+                "$ref": "#/components/schemas/MaritimeQuoteLocationResponse"
+              },
+              "destination": {
+                "$ref": "#/components/schemas/MaritimeQuoteLocationResponse"
+              },
+              "items": {
+                "$ref": "#/components/schemas/ContainerItemCollection"
+              },
+              "shipmentType": {
+                "enum": [
+                  "FCL"
+                ]
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "Currency": {
+        "type": "string",
+        "example": "EUR"
+      },
+      "Transhipment": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/JourneyPointResource"
+        },
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "JourneyPointResource": {
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "description": "Port iso code (5 chars) or IATA code (3 chars)",
+            "type": "string",
+            "example": "USMIA"
+          }
+        },
+        "type": "object"
+      },
+      "RateSchedule": {
+        "required": [
+          "departureDate",
+          "cutOffDate",
+          "vesselName",
+          "voyageNumber",
+          "transitDays",
+          "origin",
+          "destination",
+          "originRouting",
+          "destinationRouting"
+        ],
+        "properties": {
+          "departureDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-02-01T00:00:00+00:00",
+            "nullable": true
+          },
+          "cutOffDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T00:00:00+00:00",
+            "nullable": true
+          },
+          "vesselName": {
+            "type": "string",
+            "nullable": true
+          },
+          "voyageNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "transitDays": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          },
+          "origin": {
+            "$ref": "#/components/schemas/JourneyPointResource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/JourneyPointResource"
+          },
+          "originRouting": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JourneyPointResource"
+              }
+            ]
+          },
+          "destinationRouting": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JourneyPointResource"
+              }
+            ]
+          },
+          "transhipment": {
+            "$ref": "#/components/schemas/Transhipment"
+          }
+        },
+        "type": "object"
+      },
+      "BillingItems": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/BillingItem"
+        }
+      },
+      "BillingItem": {
+        "properties": {
+          "name": {},
+          "serviceItem": {
+            "$ref": "#/components/schemas/ServiceItem"
+          },
+          "optional": {
+            "type": "boolean",
+            "example": false
+          },
+          "price": {
+            "$ref": "#/components/schemas/Price"
+          }
+        },
+        "type": "object"
+      },
+      "ServiceItem": {
+        "type": "string",
+        "enum": [
+          "Freight",
+          "Pickup",
+          "PortOriginCharges",
+          "PortDestinationCharges",
+          "Delivery",
+          "Others",
+          "AdditionalService"
+        ],
+        "example": "Freight"
+      },
+      "Price": {
+        "required": [
+          "currency",
+          "amount",
+          "taxes",
+          "total"
+        ],
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "amount": {
+            "type": "number",
+            "example": 100
+          },
+          "taxes": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "type": "object"
+      },
+      "SuppliersInformation": {
+        "properties": {
+          "freight": {
+            "type": "object",
+            "nullable": false,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Supplier"
+              }
+            ]
+          },
+          "pickup": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Supplier"
+              }
+            ]
+          },
+          "delivery": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Supplier"
+              }
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "Supplier": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InlandSchedule": {
+        "required": [
+          "postalCode",
+          "cityName"
+        ],
+        "properties": {
+          "postalCode": {
+            "type": "string",
+            "example": "33000"
+          },
+          "cityName": {
+            "type": "string",
+            "example": "Madrid",
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": "velocity"
+      },
+      "AerialQuoteLocationRequest": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "postalCode": "#/components/schemas/PostalCodeQuoteLocationRequest",
+            "airport": "#/components/schemas/AirportQuoteLocationRequest"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/PostalCodeQuoteLocationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/AirportQuoteLocationRequest"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "MaritimeQuoteLocationRequest": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "postalCode": "#/components/schemas/PostalCodeQuoteLocationRequest",
+            "port": "#/components/schemas/PortQuoteLocationRequest"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/PostalCodeQuoteLocationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/PortQuoteLocationRequest"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostalCodeQuoteLocationRequest": {
+        "required": [
+          "country",
+          "postalCode",
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "postalCode"
+            ]
+          },
+          "country": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PortQuoteLocationRequest": {
+        "required": [
+          "type",
+          "portIsoCode"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "port"
+            ]
+          },
+          "portIsoCode": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "AirportQuoteLocationRequest": {
+        "required": [
+          "type",
+          "iata"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "iata": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostAirQuoteRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateQuoteRequest"
+          },
+          {
+            "required": [
+              "cargo",
+              "origin",
+              "destination"
+            ],
+            "properties": {
+              "cargo": {
+                "type": "array",
+                "items": {
+                  "required": [
+                    "height",
+                    "weight",
+                    "length",
+                    "width",
+                    "quantity",
+                    "dimensionUnit",
+                    "weightUnit"
+                  ],
+                  "properties": {
+                    "height": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "weight": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "length": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "width": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "dimensionUnit": {
+                      "type": "string",
+                      "enum": [
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ]
+                    },
+                    "weightUnit": {
+                      "type": "string",
+                      "enum": [
+                        "Kg",
+                        "Ton",
+                        "Lb"
+                      ]
+                    },
+                    "packageType": {
+                      "description": "Package type",
+                      "type": "string",
+                      "enum": [
+                        "Container",
+                        "Package",
+                        "Bag",
+                        "Bulk Bag",
+                        "Break Bulk",
+                        "Bale Compressed",
+                        "Bale Uncompressed",
+                        "Bundle",
+                        "Bottle",
+                        "Box",
+                        "Basket",
+                        "Case",
+                        "Coil",
+                        "Cradle",
+                        "Crate",
+                        "Carton",
+                        "Cylinder",
+                        "Dozen",
+                        "Drum",
+                        "Envelope",
+                        "Gross",
+                        "Keg",
+                        "Mix",
+                        "Pail",
+                        "Piece",
+                        "Pallet",
+                        "Reel",
+                        "Roll",
+                        "Sheet",
+                        "Skid",
+                        "Spool",
+                        "Tote",
+                        "Tube",
+                        "Unit"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "isKnownShipper": {
+                "type": "boolean",
+                "default": true
+              },
+              "origin": {
+                "$ref": "#/components/schemas/AerialQuoteLocationRequest"
+              },
+              "destination": {
+                "$ref": "#/components/schemas/AerialQuoteLocationRequest"
+              },
+              "cargoReadyDate": {
+                "type": "string",
+                "format": "date",
+                "nullable": false
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostFclQuoteRequest": {
+        "required": [
+          "containers"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PostMaritimeQuoteRequest"
+          },
+          {
+            "properties": {
+              "containers": {
+                "type": "array",
+                "items": {
+                  "required": [
+                    "quantity",
+                    "type"
+                  ],
+                  "properties": {
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "DV20",
+                        "DV40",
+                        "DV40HC"
+                      ]
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostLclQuoteRequest": {
+        "required": [
+          "cargo"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PostMaritimeQuoteRequest"
+          },
+          {
+            "properties": {
+              "cargo": {
+                "type": "array",
+                "items": {
+                  "required": [
+                    "weight",
+                    "quantity",
+                    "weightUnit"
+                  ],
+                  "properties": {
+                    "weight": {
+                      "description": "Weight per piece",
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "volume": {
+                      "description": "Volume",
+                      "type": "number",
+                      "format": "float",
+                      "example": 1.5,
+                      "nullable": true
+                    },
+                    "volumeUnit": {
+                      "description": "Volume unit",
+                      "type": "string",
+                      "enum": [
+                        "CM3",
+                        "M3",
+                        "IN3",
+                        "FT3"
+                      ],
+                      "example": "M3"
+                    },
+                    "weightUnit": {
+                      "description": "Weight unit",
+                      "type": "string",
+                      "enum": [
+                        "Kg",
+                        "Lb",
+                        "Ton"
+                      ],
+                      "example": "Kg"
+                    },
+                    "quantity": {
+                      "description": "Number of packages",
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "height": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "length": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "width": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "dimensionUnit": {
+                      "type": "string",
+                      "enum": [
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ]
+                    },
+                    "packageType": {
+                      "description": "Package type",
+                      "type": "string",
+                      "enum": [
+                        "Container",
+                        "Package",
+                        "Bag",
+                        "Bulk Bag",
+                        "Break Bulk",
+                        "Bale Compressed",
+                        "Bale Uncompressed",
+                        "Bundle",
+                        "Bottle",
+                        "Box",
+                        "Basket",
+                        "Case",
+                        "Coil",
+                        "Cradle",
+                        "Crate",
+                        "Carton",
+                        "Cylinder",
+                        "Dozen",
+                        "Drum",
+                        "Envelope",
+                        "Gross",
+                        "Keg",
+                        "Mix",
+                        "Pail",
+                        "Piece",
+                        "Pallet",
+                        "Reel",
+                        "Roll",
+                        "Sheet",
+                        "Skid",
+                        "Spool",
+                        "Tote",
+                        "Tube",
+                        "Unit"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostLtlQuoteRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateQuoteRequest"
+          },
+          {
+            "required": [
+              "cargo",
+              "origin",
+              "destination"
+            ],
+            "properties": {
+              "cargo": {
+                "type": "array",
+                "items": {
+                  "required": [
+                    "height",
+                    "weight",
+                    "length",
+                    "width",
+                    "quantity",
+                    "dimensionUnit",
+                    "weightUnit"
+                  ],
+                  "properties": {
+                    "height": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "weight": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "length": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "width": {
+                      "type": "number",
+                      "format": "float",
+                      "example": 105.8
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "dimensionUnit": {
+                      "type": "string",
+                      "enum": [
+                        "cm",
+                        "m",
+                        "in",
+                        "ft"
+                      ]
+                    },
+                    "weightUnit": {
+                      "type": "string",
+                      "enum": [
+                        "Kg",
+                        "Ton",
+                        "Lb"
+                      ]
+                    },
+                    "packageType": {
+                      "description": "Package type",
+                      "type": "string",
+                      "enum": [
+                        "Container",
+                        "Package",
+                        "Bag",
+                        "Bulk Bag",
+                        "Break Bulk",
+                        "Bale Compressed",
+                        "Bale Uncompressed",
+                        "Bundle",
+                        "Bottle",
+                        "Box",
+                        "Basket",
+                        "Case",
+                        "Coil",
+                        "Cradle",
+                        "Crate",
+                        "Carton",
+                        "Cylinder",
+                        "Dozen",
+                        "Drum",
+                        "Envelope",
+                        "Gross",
+                        "Keg",
+                        "Mix",
+                        "Pail",
+                        "Piece",
+                        "Pallet",
+                        "Reel",
+                        "Roll",
+                        "Sheet",
+                        "Skid",
+                        "Spool",
+                        "Tote",
+                        "Tube",
+                        "Unit"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "freightClass": {
+                "type": "string",
+                "enum": [
+                  "50",
+                  "55",
+                  "60",
+                  "65",
+                  "70",
+                  "77.5",
+                  "85",
+                  "92.5",
+                  "100",
+                  "110",
+                  "125",
+                  "150",
+                  "175",
+                  "200",
+                  "250",
+                  "300",
+                  "400",
+                  "500"
+                ],
+                "nullable": true
+              },
+              "origin": {
+                "$ref": "#/components/schemas/PostalCodeQuoteLocationRequest"
+              },
+              "destination": {
+                "$ref": "#/components/schemas/PostalCodeQuoteLocationRequest"
+              },
+              "cargoReadyDate": {
+                "type": "string",
+                "format": "date",
+                "nullable": true
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "PostMaritimeQuoteRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateQuoteRequest"
+          },
+          {
+            "required": [
+              "origin",
+              "destination"
+            ],
+            "properties": {
+              "origin": {
+                "$ref": "#/components/schemas/MaritimeQuoteLocationRequest"
+              },
+              "destination": {
+                "$ref": "#/components/schemas/MaritimeQuoteLocationRequest"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "RateResource": {
+        "required": [
+          "uuid",
+          "expirationDate",
+          "direct",
+          "schedule",
+          "billingItems",
+          "transitTime",
+          "publicTags",
+          "suppliersInformation",
+          "pickupSchedule",
+          "deliverySchedule",
+          "total",
+          "rateType",
+          "isPartial",
+          "departureWeekdays"
+        ],
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expirationDate": {
+            "type": "string",
+            "format": "date",
+            "example": "3023-02-01"
+          },
+          "direct": {
+            "type": "boolean"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/RateSchedule"
+          },
+          "billingItems": {
+            "$ref": "#/components/schemas/BillingItems"
+          },
+          "transitTime": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true
+          },
+          "publicTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Promoted",
+                "Cheapest",
+                "Fastest",
+                "Spot",
+                "Partial",
+                "Unbreakable",
+                "Origin Prerequisite",
+                "Destination Prerequisite",
+                "Pickup Included",
+                "Origin Included",
+                "Destination Included",
+                "Delivery Included"
+              ],
+              "example": "Promoted"
+            }
+          },
+          "suppliersInformation": {
+            "$ref": "#/components/schemas/SuppliersInformation"
+          },
+          "pickupSchedule": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InlandSchedule"
+              }
+            ]
+          },
+          "deliverySchedule": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InlandSchedule"
+              }
+            ]
+          },
+          "total": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "rateType": {
+            "enum": [
+              "Private",
+              "Mixed",
+              "Public"
+            ],
+            "example": "Mixed"
+          },
+          "isPartial": {
+            "type": "boolean",
+            "example": false
+          },
+          "departureWeekdays": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DepartureWeekdays"
+              }
+            ],
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ],
+              "example": 1
+            }
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "DepartureWeekdays": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "example": 1
+        },
+        "nullable": false,
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingResource": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BookingData"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingData": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          },
+          "totalAmount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/BookingLocation"
+          },
+          "originRoutingPort": {
+            "type": "string",
+            "example": "ESBCN",
+            "nullable": true
+          },
+          "destination": {
+            "$ref": "#/components/schemas/BookingLocation"
+          },
+          "destinationRoutingPort": {
+            "type": "string",
+            "example": "ESBCN",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2022-01-02 00:00:00"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PREBOOKING",
+              "REQUESTED",
+              "PENDING",
+              "CANCELED",
+              "DONE"
+            ],
+            "example": "PREBOOKING"
+          },
+          "shipmentType": {
+            "type": "string",
+            "enum": [
+              "FCL",
+              "LCL",
+              "AIR",
+              "LTL"
+            ],
+            "example": "FCL"
+          },
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContainerItemCollection"
+              },
+              {
+                "$ref": "#/components/schemas/LCLItemCollection"
+              },
+              {
+                "$ref": "#/components/schemas/DimensionedCargoItemCollection"
+              },
+              {
+                "$ref": "#/components/schemas/OptionalDimensionedCargoItemCollection"
+              }
+            ]
+          },
+          "charges": {
+            "$ref": "#/components/schemas/Charges"
+          },
+          "commodityType": {
+            "type": "string",
+            "example": "Regular Cargo"
+          },
+          "bookingParty": {
+            "$ref": "#/components/schemas/BookingParty"
+          },
+          "documents": {
+            "properties": {
+              "packagingList": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Document"
+                  }
+                ],
+                "nullable": true,
+                "type": "object"
+              },
+              "commercialInvoice": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Document"
+                  }
+                ],
+                "nullable": true,
+                "type": "object"
+              },
+              "others": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingLocation": {
+        "properties": {
+          "locationType": {
+            "type": "string",
+            "example": "PORT"
+          },
+          "portIsoCode": {
+            "type": "string",
+            "example": "ESBCN"
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "08001",
+            "nullable": true
+          },
+          "cityName": {
+            "type": "string",
+            "example": "Barcelona",
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "Money": {
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 100
+          },
+          "currency": {
+            "type": "string",
+            "example": "EUR"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingParty": {
+        "properties": {
+          "shipper": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          },
+          "consignee": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          },
+          "notify": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          },
+          "billing": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          },
+          "pickup": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          },
+          "delivery": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "Address": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "example": "Carrer de la Marina, 16",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "08001",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "example": "Barcelona",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "example": "ES",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "example": "+34 123 456 789",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "example": "hi@icontainers.com",
+            "nullable": true
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "Charges": {
+        "properties": {
+          "localCharges": {
+            "$ref": "#/components/schemas/BookingChargeCollection"
+          },
+          "freightCharges": {
+            "$ref": "#/components/schemas/BookingChargeCollection"
+          },
+          "otherCharges": {
+            "$ref": "#/components/schemas/BookingChargeCollection"
+          },
+          "inlandCharges": {
+            "$ref": "#/components/schemas/BookingChargeCollection"
+          },
+          "additionalServicesCharges": {
+            "$ref": "#/components/schemas/BookingChargeCollection"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingChargeCollection": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/BookingCharge"
+        },
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingCharge": {
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 100
+          },
+          "currency": {
+            "type": "string",
+            "example": "EUR"
+          },
+          "description": {
+            "type": "string",
+            "example": "Description of the charge"
+          },
+          "taxes": {
+            "type": "number",
+            "example": 21
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "Document": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "WcOADB4ddQXukNi6cvZVm6SLOrJUlNF5AGYFh-mbxHZNXKpMB8-QdC5AGsiBbJ6cIxFDMRHzb4glE3ngExtiTcdC"
+          },
+          "name": {
+            "type": "string",
+            "example": "Document name"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2022-01-02 00:00:00"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingDocumentDownloadResource": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BookingDocumentDownloadData"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingDocumentDownloadData": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://icontainers-s3-bucket/2040455/COMM_INVOICE/COMM_INVOICE_1.docx"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingTrackAndTraceResource": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BookingTrackAndTraceData"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BookingTrackAndTraceData": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "example": "918f07a7-14b3-4587-aa46-69f9089dd663"
+          },
+          "estimatedTimeArrival": {
+            "type": "string",
+            "example": "2021-09-01 12:00:00"
+          },
+          "estimatedTimeDeparture": {
+            "type": "string",
+            "example": "2021-09-01 12:00:00"
+          },
+          "actualTimeArrival": {
+            "type": "string",
+            "example": "2021-09-01 12:00:00",
+            "nullable": true
+          },
+          "actualTimeDeparture": {
+            "type": "string",
+            "example": "2021-09-01 12:00:00",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PREBOOKING",
+              "REQUESTED",
+              "PENDING",
+              "CANCELED",
+              "DONE"
+            ],
+            "example": "PREBOOKING"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "CreateQuoteResource": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FclQuote"
+          },
+          {
+            "properties": {
+              "data": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/FclQuote"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LclQuote"
+                  },
+                  {
+                    "$ref": "#/components/schemas/AirQuote"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "x-audience": "velocity"
+      },
+      "PostRateCalculatePricesRequest": {
+        "description": "Details of the request to calculate prices for a rate",
+        "required": [
+          "optionalBillingItems",
+          "currency",
+          "servicesSelected",
+          "lang"
+        ],
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "optionalBillingItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptionalBillingItemSelectionData"
+            }
+          },
+          "servicesSelected": {
+            "$ref": "#/components/schemas/ServicesSelected"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "es_ES",
+              "en_US"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "OptionalBillingItemSelectionData": {
+        "description": "Details of the optional billing item selection",
+        "required": [
+          "name",
+          "serviceItem"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "serviceItem": {
+            "type": "string",
+            "enum": [
+              "Pickup",
+              "Delivery",
+              "PortOriginCharges",
+              "PortDestinationCharges",
+              "Freight",
+              "AdditionalService"
+            ]
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "ServicesSelected": {
+        "description": "Details of the services selected",
+        "required": [
+          "pickup",
+          "origin",
+          "destination",
+          "freight",
+          "delivery"
+        ],
+        "properties": {
+          "pickup": {
+            "type": "boolean"
+          },
+          "origin": {
+            "type": "boolean"
+          },
+          "destination": {
+            "type": "boolean"
+          },
+          "freight": {
+            "type": "boolean"
+          },
+          "delivery": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "RateCalculatePricesResource": {
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RateCalculatePricesData"
+          }
+        },
+        "type": "object"
+      },
+      "RateCalculatePricesData": {
+        "description": "Details of the response of calculate prices for a rate",
+        "required": [
+          "rate",
+          "optionalBillingItems"
+        ],
+        "properties": {
+          "rate": {
+            "$ref": "#/components/schemas/RateResource"
+          },
+          "optionalBillingItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptionalBillingItemInformationData"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "OptionalBillingItemInformationData": {
+        "description": "Details of the optional billing item information",
+        "required": [
+          "name",
+          "serviceItem",
+          "optional",
+          "price"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "serviceItem": {
+            "$ref": "#/components/schemas/ServiceItem"
+          },
+          "optional": {
+            "type": "string",
+            "enum": [
+              "optional",
+              "required",
+              "recommended"
+            ]
+          },
+          "price": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "BookingAddressData": {
+        "title": "BookingAddressData",
+        "description": "Address data to associate with a booking.",
+        "required": [
+          "address",
+          "city",
+          "companyName",
+          "countryIsoCode",
+          "contactName"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "countryIsoCode": {
+            "description": "ISO 3166-1 alpha-2 country code",
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "eoriCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "legalId": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactName": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "BillingBookingAddressData": {
+        "title": "BillingBookingAddressData",
+        "description": "Address data for billing addresses. Requires email and phone in addition to the base address fields.",
+        "required": [
+          "email",
+          "phone"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BookingAddressData"
+          }
+        ],
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchAerialPlaces": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SearchAerialPlacesData"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchAerialPlacesData": {
+        "properties": {
+          "cities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchCitiesData"
+            }
+          },
+          "postalCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchPostalCodesData"
+            }
+          },
+          "airports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAirportsData"
+            }
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchAirportsData": {
+        "properties": {
+          "airportName": {
+            "type": "string",
+            "example": "Barcelona-Josep Tarradellas Airport"
+          },
+          "iataCode": {
+            "type": "string",
+            "maxLength": 3,
+            "minLength": 3,
+            "example": "BCN"
+          },
+          "countryIsoCode": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 2,
+            "example": "ES"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchMaritimePlaces": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SearchMaritimePlacesData"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchMaritimePlacesData": {
+        "properties": {
+          "cities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchCitiesData"
+            }
+          },
+          "postalCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchPostalCodesData"
+            }
+          },
+          "seaPorts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchSeaPortsData"
+            }
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchSeaPortsData": {
+        "properties": {
+          "portName": {
+            "type": "string",
+            "example": "Barcelona Port"
+          },
+          "countryIsoCode": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 2,
+            "example": "ES"
+          },
+          "cityName": {
+            "type": "string",
+            "example": "Barcelona"
+          },
+          "portIsoCode": {
+            "type": "string",
+            "maxLength": 5,
+            "minLength": 5,
+            "example": "ESBCN"
+          }
+        },
+        "type": "object",
+        "x-audience": [
+          "velocity",
+          "xhipment"
+        ]
+      },
+      "SearchCitiesData": {
+        "required": [
+          "countryIsoCode",
+          "cityName",
+          "defaultPostalCode"
+        ],
+        "properties": {
+          "countryIsoCode": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 2,
+            "example": "ES"
+          },
+          "cityName": {
+            "type": "string",
+            "example": "Barcelona"
+          },
+          "defaultPostalCode": {
+            "description": "Postal code",
+            "type": "string",
+            "example": "08001"
+          },
+          "state": {
+            "type": "string",
+            "example": "ME"
+          }
+        },
+        "type": "object"
+      },
+      "SearchPostalCodesData": {
+        "required": [
+          "countryIsoCode",
+          "cityName",
+          "postalCode"
+        ],
+        "properties": {
+          "countryIsoCode": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 2,
+            "example": "ES"
+          },
+          "cityName": {
+            "type": "string",
+            "example": "Barcelona"
+          },
+          "postalCode": {
+            "description": "Postal code",
+            "type": "string",
+            "example": "08001"
+          }
+        },
+        "type": "object"
+      },
+      "422Response": {
+        "properties": {
+          "message": {
+            "example": "The given data was invalid."
+          },
+          "errors": {
+            "type": "object",
+            "example": {
+              "someProperty": [
+                "The some property field is required."
+              ]
+            },
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "type": "object"
+      },
+      "DimensionedCargoItemCollection": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/DimensionedCargoItem"
+        }
+      },
+      "ContainerItemCollection": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ContainerItem"
+        }
+      },
+      "LCLItemCollection": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/LclCargoItem"
+        }
+      },
+      "OptionalDimensionedCargoItemCollection": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/OptionalDimensionedCargoItem"
+        }
+      },
+      "ContainerItem": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "DV20",
+              "DV40",
+              "DV40HC",
+              "HC45",
+              "OT20",
+              "OT40",
+              "RE20",
+              "RE40",
+              "RE40HC",
+              "FR20",
+              "FR40",
+              "NOR20",
+              "NOR40",
+              "PL20",
+              "PW20H",
+              "IN20B",
+              "RF40H",
+              "RF40",
+              "PL40",
+              "ISO20",
+              "FT40",
+              "OT20",
+              "PW40H",
+              "GR20",
+              "HC45",
+              "IN20A",
+              "FT20",
+              "RF20",
+              "TK20",
+              "TK40",
+              "HC40",
+              "OT40",
+              "ISO40"
+            ]
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          },
+          "cargoDescription": {
+            "type": "string",
+            "example": "Flammable chemicals",
+            "nullable": true
+          },
+          "weight": {
+            "properties": {
+              "weight": {
+                "type": "number",
+                "format": "float",
+                "example": 950.5
+              },
+              "unit": {
+                "$ref": "#/components/schemas/WeightUnit"
+              }
+            },
+            "type": "object",
+            "nullable": true
+          },
+          "temperatureControl": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ContainerTemperatureControl"
+              }
+            ],
+            "nullable": true
+          },
+          "dangerousGoods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGood"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "LclCargoItem": {
+        "properties": {
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "example": 105.25
+          },
+          "weightUnit": {
+            "$ref": "#/components/schemas/WeightUnit"
+          },
+          "volume": {
+            "type": "number",
+            "format": "float",
+            "example": 3.69
+          },
+          "volumeUnit": {
+            "$ref": "#/components/schemas/VolumeUnit"
+          },
+          "height": {
+            "type": "number",
+            "format": "float",
+            "example": 10.2,
+            "nullable": true
+          },
+          "length": {
+            "type": "number",
+            "format": "float",
+            "example": 2.9,
+            "nullable": true
+          },
+          "width": {
+            "type": "number",
+            "format": "float",
+            "example": 13.2,
+            "nullable": true
+          },
+          "dimensionUnit": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DimensionUnit"
+              }
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 4
+          },
+          "packageType": {
+            "$ref": "#/components/schemas/PackageType"
+          },
+          "cargoDescription": {
+            "type": "string",
+            "example": "Electronics",
+            "nullable": true
+          },
+          "cargoType": {
+            "type": "string",
+            "example": "general",
+            "nullable": true
+          },
+          "stackable": {
+            "type": "boolean",
+            "example": true,
+            "nullable": true
+          },
+          "temperatureControl": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TemperatureControlledGoods"
+              }
+            ],
+            "nullable": true
+          },
+          "dangerousGoods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGood"
+            }
+          },
+          "numberOfPieces": {
+            "type": "integer",
+            "example": 7
+          }
+        },
+        "type": "object"
+      },
+      "WeightUnit": {
+        "description": "Weight unit",
+        "type": "string",
+        "enum": [
+          "Kg",
+          "Ton",
+          "Lb"
+        ],
+        "example": "Kg"
+      },
+      "DimensionUnit": {
+        "description": "Dimension unit",
+        "type": "string",
+        "enum": [
+          "cm",
+          "m",
+          "ft",
+          "in"
+        ],
+        "example": "cm"
+      },
+      "VolumeUnit": {
+        "description": "Volume unit",
+        "type": "string",
+        "enum": [
+          "CM3",
+          "M3",
+          "IN3",
+          "FT3"
+        ],
+        "example": "M3"
+      },
+      "TemperatureUnit": {
+        "description": "Temperature unit",
+        "type": "string",
+        "enum": [
+          "C",
+          "F"
+        ],
+        "example": "C"
+      },
+      "PackageType": {
+        "description": "Package type",
+        "type": "string",
+        "enum": [
+          "Container",
+          "Package",
+          "Bag",
+          "Bulk Bag",
+          "Break Bulk",
+          "Bale Compressed",
+          "Bale Uncompressed",
+          "Bundle",
+          "Bottle",
+          "Box",
+          "Basket",
+          "Case",
+          "Coil",
+          "Cradle",
+          "Crate",
+          "Carton",
+          "Cylinder",
+          "Dozen",
+          "Drum",
+          "Envelope",
+          "Gross",
+          "Keg",
+          "Mix",
+          "Pail",
+          "Piece",
+          "Pallet",
+          "Reel",
+          "Roll",
+          "Sheet",
+          "Skid",
+          "Spool",
+          "Tote",
+          "Tube",
+          "Unit"
+        ],
+        "example": "Pallet"
+      },
+      "DangerousGood": {
+        "description": "Dangerous good identified by its UN number",
+        "required": [
+          "unNumber"
+        ],
+        "properties": {
+          "unNumber": {
+            "type": "string",
+            "example": "UN1993"
+          }
+        },
+        "type": "object"
+      },
+      "TemperatureControlledGoods": {
+        "description": "Temperature limits for temperature-controlled cargo (LCL/AIR/LTL)",
+        "required": [
+          "min",
+          "max",
+          "unit"
+        ],
+        "properties": {
+          "min": {
+            "type": "number",
+            "format": "float",
+            "example": 2
+          },
+          "max": {
+            "type": "number",
+            "format": "float",
+            "example": 8
+          },
+          "unit": {
+            "$ref": "#/components/schemas/TemperatureUnit"
+          }
+        },
+        "type": "object"
+      },
+      "ContainerTemperatureControl": {
+        "description": "Temperature control for reefer containers (FCL)",
+        "required": [
+          "cargoLimits",
+          "setPoint",
+          "requiresGenset"
+        ],
+        "properties": {
+          "cargoLimits": {
+            "properties": {
+              "min": {
+                "type": "number",
+                "format": "float",
+                "example": -15
+              },
+              "max": {
+                "type": "number",
+                "format": "float",
+                "example": 8
+              },
+              "unit": {
+                "$ref": "#/components/schemas/TemperatureUnit"
+              }
+            },
+            "type": "object"
+          },
+          "setPoint": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "format": "float",
+                "example": -3
+              },
+              "unit": {
+                "$ref": "#/components/schemas/TemperatureUnit"
+              }
+            },
+            "type": "object"
+          },
+          "requiresGenset": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "type": "object"
+      },
+      "DimensionedCargoItem": {
+        "required": [
+          "weight",
+          "height",
+          "length",
+          "width",
+          "dimensionUnit",
+          "weightUnit",
+          "quantity",
+          "packageType",
+          "numberOfPieces"
+        ],
+        "properties": {
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "example": 105.8
+          },
+          "height": {
+            "type": "number",
+            "format": "float",
+            "example": 10.2
+          },
+          "length": {
+            "type": "number",
+            "format": "float",
+            "example": 2.9
+          },
+          "width": {
+            "type": "number",
+            "format": "float",
+            "example": 13.2
+          },
+          "dimensionUnit": {
+            "$ref": "#/components/schemas/DimensionUnit"
+          },
+          "weightUnit": {
+            "$ref": "#/components/schemas/WeightUnit"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 3
+          },
+          "packageType": {
+            "$ref": "#/components/schemas/PackageType"
+          },
+          "cargoDescription": {
+            "type": "string",
+            "example": "Fragile goods",
+            "nullable": true
+          },
+          "cargoType": {
+            "type": "string",
+            "example": "general",
+            "nullable": true
+          },
+          "stackable": {
+            "type": "boolean",
+            "example": false,
+            "nullable": true
+          },
+          "temperatureControl": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TemperatureControlledGoods"
+              }
+            ],
+            "nullable": true
+          },
+          "dangerousGoods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGood"
+            }
+          },
+          "numberOfPieces": {
+            "type": "integer",
+            "example": 9
+          }
+        },
+        "type": "object"
+      },
+      "OptionalDimensionedCargoItem": {
+        "required": [
+          "weight",
+          "weightUnit",
+          "quantity",
+          "packageType",
+          "numberOfPieces"
+        ],
+        "properties": {
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "example": 105.8
+          },
+          "weightUnit": {
+            "$ref": "#/components/schemas/WeightUnit"
+          },
+          "height": {
+            "type": "number",
+            "format": "float",
+            "example": 10.2,
+            "nullable": true
+          },
+          "length": {
+            "type": "number",
+            "format": "float",
+            "example": 2.9,
+            "nullable": true
+          },
+          "width": {
+            "type": "number",
+            "format": "float",
+            "example": 13.2,
+            "nullable": true
+          },
+          "dimensionUnit": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DimensionUnit"
+              }
+            ],
+            "nullable": true
+          },
+          "volume": {
+            "type": "number",
+            "format": "float",
+            "example": 3.69,
+            "nullable": true
+          },
+          "volumeUnit": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VolumeUnit"
+              }
+            ],
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "example": 3
+          },
+          "packageType": {
+            "$ref": "#/components/schemas/PackageType"
+          },
+          "cargoDescription": {
+            "type": "string",
+            "example": "Fragile goods",
+            "nullable": true
+          },
+          "cargoType": {
+            "type": "string",
+            "example": "general",
+            "nullable": true
+          },
+          "stackable": {
+            "type": "boolean",
+            "example": false,
+            "nullable": true
+          },
+          "temperatureControl": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TemperatureControlledGoods"
+              }
+            ],
+            "nullable": true
+          },
+          "dangerousGoods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DangerousGood"
+            }
+          },
+          "numberOfPieces": {
+            "type": "integer",
+            "example": 9
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "bearerFormat": "JWT",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

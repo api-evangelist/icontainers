@@ -13,7 +13,7 @@ url: https://raw.githubusercontent.com/api-evangelist/icontainers/refs/heads/mai
 image: https://icontainers-public.s3.us-east-1.amazonaws.com/images/iContainers+Logo.svg
 x-type: company
 x-source: serena-portfolio
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:

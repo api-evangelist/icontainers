@@ -28,6 +28,19 @@ tags:
 - Customs
 - Freight Quoting
 - Container Shipping
+- Track and Trace
+tags_raw:
+- Company
+- Marketplace
+- Logistics
+- Freight
+- Shipping
+- Ocean Freight
+- Air Freight
+- Supply Chain
+- Customs
+- Freight Quoting
+- Container Shipping
 - Track And Trace
 apis:
 - name: iContainers Brutus API
@@ -40,6 +53,15 @@ apis:
   humanURL: https://developer.icontainers.com/
   baseURL: https://brutus.icontainers.com
   tags:
+  - Freight
+  - Shipping
+  - Quotes
+  - Bookings
+  - Rates
+  - Documents
+  - Track and Trace
+  - Logistics
+  tags_raw:
   - Freight
   - Shipping
   - Quotes

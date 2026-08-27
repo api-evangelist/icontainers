@@ -43,42 +43,124 @@ tags_raw:
 - Container Shipping
 - Track And Trace
 apis:
-- name: iContainers Brutus API
-  description: >-
-    The Brutus API is iContainers' published REST contract for programmatic freight quoting and booking. It exposes
-    quote creation for FCL, LCL, air and LTL shipments, quote retrieval by UUID, price calculation for a returned rate,
-    maritime and aerial place/port search, booking a rate, retrieving booking details, booking track-and-trace, and
-    uploading/downloading booking documents. All operations require a JWT bearer token; validation failures return a
-    Laravel-style envelope with a `message` string and a per-field `errors` object.
+- aid: icontainers:icontainers-bookings-api
+  name: iContainers Bookings API
+  description: Bookings
   humanURL: https://developer.icontainers.com/
   baseURL: https://brutus.icontainers.com
   tags:
-  - Freight
-  - Shipping
-  - Quotes
   - Bookings
-  - Rates
-  - Documents
-  - Track and Trace
-  - Logistics
-  tags_raw:
-  - Freight
-  - Shipping
-  - Quotes
-  - Bookings
-  - Rates
-  - Documents
-  - Track And Trace
-  - Logistics
   properties:
   - type: OpenAPI
-    url: openapi/icontainers-brutus-openapi.yml
+    url: openapi/icontainers-bookings-api-openapi.yml
   - type: Documentation
     url: https://developer.icontainers.com/
   - type: APIReference
     url: https://developer.icontainers.com/
-  - type: Overlay
-    url: overlays/icontainers-brutus-overlay.yaml
+  - type: Authentication
+    url: authentication/icontainers-authentication.yml
+  - type: Conventions
+    url: conventions/icontainers-conventions.yml
+  - type: ErrorCatalog
+    url: errors/icontainers-problem-types.yml
+  - type: DataModel
+    url: data-model/icontainers-data-model.yml
+  - type: RateLimits
+    url: rate-limits/icontainers-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/icontainers-sandbox.yml
+- aid: icontainers:icontainers-documents-api
+  name: iContainers Documents API
+  description: Documents
+  humanURL: https://developer.icontainers.com/
+  baseURL: https://brutus.icontainers.com
+  tags:
+  - Documents
+  properties:
+  - type: OpenAPI
+    url: openapi/icontainers-documents-api-openapi.yml
+  - type: Documentation
+    url: https://developer.icontainers.com/
+  - type: APIReference
+    url: https://developer.icontainers.com/
+  - type: Authentication
+    url: authentication/icontainers-authentication.yml
+  - type: Conventions
+    url: conventions/icontainers-conventions.yml
+  - type: ErrorCatalog
+    url: errors/icontainers-problem-types.yml
+  - type: DataModel
+    url: data-model/icontainers-data-model.yml
+  - type: RateLimits
+    url: rate-limits/icontainers-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/icontainers-sandbox.yml
+- aid: icontainers:icontainers-places-api
+  name: iContainers Places API
+  description: Places
+  humanURL: https://developer.icontainers.com/
+  baseURL: https://brutus.icontainers.com
+  tags:
+  - Places
+  properties:
+  - type: OpenAPI
+    url: openapi/icontainers-places-api-openapi.yml
+  - type: Documentation
+    url: https://developer.icontainers.com/
+  - type: APIReference
+    url: https://developer.icontainers.com/
+  - type: Authentication
+    url: authentication/icontainers-authentication.yml
+  - type: Conventions
+    url: conventions/icontainers-conventions.yml
+  - type: ErrorCatalog
+    url: errors/icontainers-problem-types.yml
+  - type: DataModel
+    url: data-model/icontainers-data-model.yml
+  - type: RateLimits
+    url: rate-limits/icontainers-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/icontainers-sandbox.yml
+- aid: icontainers:icontainers-quotes-api
+  name: iContainers Quotes API
+  description: Quotes
+  humanURL: https://developer.icontainers.com/
+  baseURL: https://brutus.icontainers.com
+  tags:
+  - Quotes
+  properties:
+  - type: OpenAPI
+    url: openapi/icontainers-quotes-api-openapi.yml
+  - type: Documentation
+    url: https://developer.icontainers.com/
+  - type: APIReference
+    url: https://developer.icontainers.com/
+  - type: Authentication
+    url: authentication/icontainers-authentication.yml
+  - type: Conventions
+    url: conventions/icontainers-conventions.yml
+  - type: ErrorCatalog
+    url: errors/icontainers-problem-types.yml
+  - type: DataModel
+    url: data-model/icontainers-data-model.yml
+  - type: RateLimits
+    url: rate-limits/icontainers-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/icontainers-sandbox.yml
+- aid: icontainers:icontainers-rates-api
+  name: iContainers Rates API
+  description: Rates
+  humanURL: https://developer.icontainers.com/
+  baseURL: https://brutus.icontainers.com
+  tags:
+  - Rates
+  properties:
+  - type: OpenAPI
+    url: openapi/icontainers-rates-api-openapi.yml
+  - type: Documentation
+    url: https://developer.icontainers.com/
+  - type: APIReference
+    url: https://developer.icontainers.com/
   - type: Authentication
     url: authentication/icontainers-authentication.yml
   - type: Conventions

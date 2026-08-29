@@ -10,6 +10,18 @@ description: >-
   upload/download — secured with JWT bearer tokens. iContainers also sells a white-label freight forwarding portal, and
   its operational layer is supplied by the third-party platform VelocityOS.ai.
 url: https://raw.githubusercontent.com/api-evangelist/icontainers/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://icontainers-public.s3.us-east-1.amazonaws.com/images/iContainers+Logo.svg
 x-type: company
 x-source: serena-portfolio

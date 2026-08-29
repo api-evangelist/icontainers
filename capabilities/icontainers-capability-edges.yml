@@ -1,0 +1,48 @@
+slug: icontainers
+provider: iContainers
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Transportation & Logistics
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 3
+edges:
+- tag: Quotes
+  spec_file: icontainers-quotes-api-openapi.yml
+  capability_id: BC-2450.10
+  capability_id_l1: BC-2450
+  capability_name: Shipper Quotation Management
+  confidence: 0.92
+  evidence: POST /api/v1/quotes/fcl  FclQuote  Create a new FCL Quote; POST /api/v1/quotes/air  AirQuote  Create
+    a new Air Quote; schemas PostMaritimeQuoteRequest, FclQuoteResource
+  reason: A digital freight forwarder issuing FCL, LCL, air and LTL quotes to shippers with cargo items,
+    origin/destination ports and transhipment details is precisely shipper quotation management within
+    freight forwarding.
+- tag: Rates
+  spec_file: icontainers-rates-api-openapi.yml
+  capability_id: BC-2520.50
+  capability_id_l1: BC-2520
+  capability_name: Rating Engine Operations Management
+  confidence: 0.82
+  evidence: POST /api/v1/rates/{rateUuid}/calculatePrices  RateCalculatePrices  Calculate Prices for a
+    Rate; schemas BillingItems, BillingItem, RateSchedule, Price, Currency
+  reason: The single operation prices a freight rate, returning billing items, service items and currency-denominated
+    prices — the behaviour of a freight rating engine. Sub-capability chosen over tariff/contract/spot
+    rate maintenance because the operation calculates rather than maintains rates.
+- tag: Bookings
+  spec_file: icontainers-bookings-api-openapi.yml
+  capability_id: BC-2400.40
+  capability_id_l1: BC-2400
+  capability_name: Booking and Reservation Management
+  confidence: 0.75
+  evidence: '''POST /api/v1/rates/{rateUuid}/book  Book a rate''; ''GET /api/v1/bookings/{bookingUuid}/details  Get
+    booking details''; schemas BookRateResource, BookingParty, DangerousGood'
+  reason: The surface accepts a booking against a previously quoted rate and manages its details, parties,
+    cargo items and documents — acceptance of freight bookings against quotes. Some ambiguity because
+    the vendor is a forwarder (could be read as carrier procurement), hence 0.75.

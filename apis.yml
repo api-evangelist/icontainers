@@ -191,6 +191,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/icontainers-capability-edges.yml
+  name: iContainers Business Capability Map
 - type: AgenticAccess
   url: agentic-access/icontainers-agentic-access.yml
 - type: DomainSecurity

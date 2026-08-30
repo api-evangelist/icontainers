@@ -1,0 +1,119 @@
+openapi: 3.2.0
+info:
+  title: Brutus Documents API
+  contact:
+    email: devsupport@icontainers.com
+  license:
+    name: private
+    url: https://www.icontainers.com
+  version: 1.0.0
+  x-logo:
+    url: https://icontainers-public.s3.us-east-1.amazonaws.com/images/iContainers+Logo.svg
+  description: Documents
+servers:
+- url: https://brutus.icontainers.com
+  description: Production server
+- url: https://brutus-dev.icontainers.com
+  description: Developing server
+tags:
+- name: Documents
+  description: Documents
+  x-audience:
+  - velocity
+  - tenant
+paths:
+  /tenant/v1/documents/{documentId}:
+    get:
+      tags:
+      - Documents
+      summary: Get document content by ID
+      operationId: GetDocumentTenant
+      parameters:
+      - name: documentId
+        in: path
+        description: Document identifier in the format objectType.objectId.documentId
+        required: true
+        schema:
+          type: string
+        example: booking.918f07a7-14b3-4587-aa46-69f9089dd663.550e8400-e29b-41d4-a716-446655440000
+      responses:
+        '200':
+          description: Document file content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Authentication required
+        '404':
+          description: Document not found
+        '422':
+          description: Invalid Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Response'
+      security:
+      - bearerAuth: []
+      x-audience:
+      - velocity
+      - tenant
+      - dsv
+  /api/v1/documents/{documentId}:
+    get:
+      tags:
+      - Documents
+      summary: Get document content by ID
+      operationId: GetDocument
+      parameters:
+      - name: documentId
+        in: path
+        description: Document identifier in the format objectType/objectId/documentId
+        required: true
+        schema:
+          type: string
+        example: booking/918f07a7-14b3-4587-aa46-69f9089dd663/550e8400-e29b-41d4-a716-446655440000
+      responses:
+        '200':
+          description: Document file content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Authentication required
+        '404':
+          description: Document not found
+        '422':
+          description: Invalid Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Response'
+      security:
+      - bearerAuth: []
+      x-audience:
+      - velocity
+components:
+  schemas:
+    422Response:
+      properties:
+        message:
+          example: The given data was invalid.
+        errors:
+          type: object
+          example:
+            someProperty:
+            - The some property field is required.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer

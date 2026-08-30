@@ -1,0 +1,265 @@
+openapi: 3.2.0
+info:
+  title: Brutus Places API
+  contact:
+    email: devsupport@icontainers.com
+  license:
+    name: private
+    url: https://www.icontainers.com
+  version: 1.0.0
+  x-logo:
+    url: https://icontainers-public.s3.us-east-1.amazonaws.com/images/iContainers+Logo.svg
+  description: Places
+servers:
+- url: https://brutus.icontainers.com
+  description: Production server
+- url: https://brutus-dev.icontainers.com
+  description: Developing server
+tags:
+- name: Places
+  description: Places
+  x-audience: velocity
+paths:
+  /api/v1/locations/aerial/places:
+    get:
+      tags:
+      - Places
+      summary: Search places for aerial transportation
+      description: This method return valid results for aerial places to use in a aerial quotation later on
+      operationId: f7652b9cd80cf6ebb58789309b5420bd
+      parameters:
+      - name: term
+        in: query
+        description: Term to search for places
+        required: true
+        schema:
+          type: string
+          maxLength: 400
+        example: bar
+      responses:
+        '200':
+          description: Information of the places
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchAerialPlaces'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Error in validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Response'
+        '500':
+          description: Internal server error
+      security:
+      - bearerAuth: []
+      x-audience:
+      - velocity
+      - xhipment
+  /api/v1/locations/maritime/places:
+    get:
+      tags:
+      - Places
+      summary: Search places for maritime transportation options (FCL/LCL).
+      description: This method return valid results for aerial places to use in a maritime (FCL/LCL) quotation later on
+      operationId: 34de8aa5b349a2047b75f06e974d840c
+      parameters:
+      - name: term
+        in: query
+        description: Term to search for places
+        required: true
+        schema:
+          type: string
+          maxLength: 400
+        example: bar
+      - name: shipmentType
+        in: query
+        description: Shipment type, I.e FCL or LCL
+        required: true
+        schema:
+          type: string
+          maxLength: 3
+          minLength: 3
+          enum:
+          - FCL
+          - LCL
+        example: FCL
+      responses:
+        '200':
+          description: Information of the places
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMaritimePlaces'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Error in validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Response'
+        '500':
+          description: Internal server error
+      security:
+      - bearerAuth: []
+      x-audience:
+      - velocity
+      - xhipment
+components:
+  schemas:
+    SearchPostalCodesData:
+      required:
+      - countryIsoCode
+      - cityName
+      - postalCode
+      properties:
+        countryIsoCode:
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: ES
+        cityName:
+          type: string
+          example: Barcelona
+        postalCode:
+          description: Postal code
+          type: string
+          example: 08001
+      type: object
+    SearchAerialPlacesData:
+      properties:
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCitiesData'
+        postalCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchPostalCodesData'
+        airports:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchAirportsData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchAerialPlaces:
+      properties:
+        data:
+          $ref: '#/components/schemas/SearchAerialPlacesData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchSeaPortsData:
+      properties:
+        portName:
+          type: string
+          example: Barcelona Port
+        countryIsoCode:
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: ES
+        cityName:
+          type: string
+          example: Barcelona
+        portIsoCode:
+          type: string
+          maxLength: 5
+          minLength: 5
+          example: ESBCN
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchMaritimePlaces:
+      properties:
+        data:
+          $ref: '#/components/schemas/SearchMaritimePlacesData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchMaritimePlacesData:
+      properties:
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCitiesData'
+        postalCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchPostalCodesData'
+        seaPorts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchSeaPortsData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    422Response:
+      properties:
+        message:
+          example: The given data was invalid.
+        errors:
+          type: object
+          example:
+            someProperty:
+            - The some property field is required.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      type: object
+    SearchAirportsData:
+      properties:
+        airportName:
+          type: string
+          example: Barcelona-Josep Tarradellas Airport
+        iataCode:
+          type: string
+          maxLength: 3
+          minLength: 3
+          example: BCN
+        countryIsoCode:
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: ES
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchCitiesData:
+      required:
+      - countryIsoCode
+      - cityName
+      - defaultPostalCode
+      properties:
+        countryIsoCode:
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: ES
+        cityName:
+          type: string
+          example: Barcelona
+        defaultPostalCode:
+          description: Postal code
+          type: string
+          example: 08001
+        state:
+          type: string
+          example: ME
+      type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer

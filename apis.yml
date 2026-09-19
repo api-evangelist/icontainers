@@ -76,6 +76,8 @@ apis:
   humanURL: https://developer.icontainers.com/
   baseURL: https://brutus.icontainers.com
   tags:
+  - Booking
+  tags_raw:
   - Bookings
   properties:
   - type: OpenAPI

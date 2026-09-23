@@ -241,175 +241,114 @@ paths:
       - xhipment
 components:
   schemas:
-    BookingAddressData:
-      title: BookingAddressData
-      description: Address data to associate with a booking.
-      required:
-      - address
-      - city
-      - companyName
-      - countryIsoCode
-      - contactName
+    BookingTrackAndTraceData:
       properties:
-        address:
+        uuid:
           type: string
-        city:
+          format: uuid
+          example: 918f07a7-14b3-4587-aa46-69f9089dd663
+        estimatedTimeArrival:
           type: string
-        companyName:
+          example: '2021-09-01 12:00:00'
+        estimatedTimeDeparture:
           type: string
-        countryIsoCode:
-          description: ISO 3166-1 alpha-2 country code
+          example: '2021-09-01 12:00:00'
+        actualTimeArrival:
+          type:
+          - string
+          - 'null'
+          example: '2021-09-01 12:00:00'
+        actualTimeDeparture:
+          type:
+          - string
+          - 'null'
+          example: '2021-09-01 12:00:00'
+        status:
           type: string
-          maxLength: 2
-          minLength: 2
-        email:
-          type:
-          - string
-          - 'null'
-          format: email
-        eoriCode:
-          type:
-          - string
-          - 'null'
-        legalId:
-          type:
-          - string
-          - 'null'
-        phone:
-          type:
-          - string
-          - 'null'
-        postalCode:
-          type:
-          - string
-          - 'null'
-        stateCode:
-          type:
-          - string
-          - 'null'
-        contactName:
-          type: string
+          enum:
+          - PREBOOKING
+          - REQUESTED
+          - PENDING
+          - CANCELED
+          - DONE
+          example: PREBOOKING
       type: object
       x-audience:
       - velocity
       - xhipment
-    BookingParty:
+    BookingTrackAndTraceResource:
       properties:
-        shipper:
-          oneOf:
-          - $ref: '#/components/schemas/Address'
-          type:
-          - object
-          - 'null'
-        consignee:
-          oneOf:
-          - $ref: '#/components/schemas/Address'
-          type:
-          - object
-          - 'null'
-        notify:
-          oneOf:
-          - $ref: '#/components/schemas/Address'
-          type:
-          - object
-          - 'null'
-        billing:
-          oneOf:
-          - $ref: '#/components/schemas/Address'
-          type:
-          - object
-          - 'null'
-        pickup:
-          oneOf:
-          - $ref: '#/components/schemas/Address'
-          type:
-          - object
-          - 'null'
-        delivery:
-          oneOf:
-          - $ref: '#/components/schemas/Address'
-          type:
-          - object
-          - 'null'
+        data:
+          $ref: '#/components/schemas/BookingTrackAndTraceData'
       type: object
       x-audience:
       - velocity
       - xhipment
-    OptionalDimensionedCargoItem:
+    ContainerTemperatureControl:
+      description: Temperature control for reefer containers (FCL)
       required:
-      - weight
-      - weightUnit
-      - quantity
-      - packageType
-      - numberOfPieces
+      - cargoLimits
+      - setPoint
+      - requiresGenset
       properties:
-        weight:
-          type: number
-          format: float
-          example: 105.8
-        weightUnit:
-          $ref: '#/components/schemas/WeightUnit'
-        height:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 10.2
-        length:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 2.9
-        width:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 13.2
-        dimensionUnit:
-          oneOf:
-          - $ref: '#/components/schemas/DimensionUnit'
-        volume:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 3.69
-        volumeUnit:
-          oneOf:
-          - $ref: '#/components/schemas/VolumeUnit'
-        quantity:
-          type: number
-          example: 3
-        packageType:
-          $ref: '#/components/schemas/PackageType'
-        cargoDescription:
-          type:
-          - string
-          - 'null'
-          example: Fragile goods
-        cargoType:
-          type:
-          - string
-          - 'null'
-          example: general
-        stackable:
-          type:
-          - boolean
-          - 'null'
-          example: false
-        temperatureControl:
-          oneOf:
-          - $ref: '#/components/schemas/TemperatureControlledGoods'
-        dangerousGoods:
-          type: array
-          items:
-            $ref: '#/components/schemas/DangerousGood'
-        numberOfPieces:
-          type: integer
-          example: 9
+        cargoLimits:
+          properties:
+            min:
+              type: number
+              format: float
+              example: -15
+            max:
+              type: number
+              format: float
+              example: 8
+            unit:
+              $ref: '#/components/schemas/TemperatureUnit'
+          type: object
+        setPoint:
+          properties:
+            value:
+              type: number
+              format: float
+              example: -3
+            unit:
+              $ref: '#/components/schemas/TemperatureUnit'
+          type: object
+        requiresGenset:
+          type: boolean
+          example: true
       type: object
+    BookingChargeCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/BookingCharge'
+      x-audience:
+      - velocity
+      - xhipment
+    Bookings.AddDocumentForBookingRequest:
+      required:
+      - documentType
+      - document
+      properties:
+        documentType:
+          description: Type of document
+          type: string
+          enum:
+          - CommercialInvoice
+          - PackingList
+          - Others
+          example: CommercialInvoice
+        document:
+          description: Document file (PDF, CSV, or XLSX)
+          type: string
+          format: binary
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    ContainerItemCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContainerItem'
     VolumeUnit:
       description: Volume unit
       type: string
@@ -419,6 +358,59 @@ components:
       - IN3
       - FT3
       example: M3
+    DangerousGood:
+      description: Dangerous good identified by its UN number
+      required:
+      - unNumber
+      properties:
+        unNumber:
+          type: string
+          example: UN1993
+      type: object
+    Money:
+      properties:
+        amount:
+          type: number
+          example: 100
+        currency:
+          type: string
+          example: EUR
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    DimensionUnit:
+      description: Dimension unit
+      type: string
+      enum:
+      - cm
+      - m
+      - ft
+      - in
+      example: cm
+    TemperatureUnit:
+      description: Temperature unit
+      type: string
+      enum:
+      - C
+      - F
+      example: C
+    Charges:
+      properties:
+        localCharges:
+          $ref: '#/components/schemas/BookingChargeCollection'
+        freightCharges:
+          $ref: '#/components/schemas/BookingChargeCollection'
+        otherCharges:
+          $ref: '#/components/schemas/BookingChargeCollection'
+        inlandCharges:
+          $ref: '#/components/schemas/BookingChargeCollection'
+        additionalServicesCharges:
+          $ref: '#/components/schemas/BookingChargeCollection'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
     DimensionedCargoItem:
       required:
       - weight
@@ -490,114 +482,6 @@ components:
       - Ton
       - Lb
       example: Kg
-    Charges:
-      properties:
-        localCharges:
-          $ref: '#/components/schemas/BookingChargeCollection'
-        freightCharges:
-          $ref: '#/components/schemas/BookingChargeCollection'
-        otherCharges:
-          $ref: '#/components/schemas/BookingChargeCollection'
-        inlandCharges:
-          $ref: '#/components/schemas/BookingChargeCollection'
-        additionalServicesCharges:
-          $ref: '#/components/schemas/BookingChargeCollection'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    BillingBookingAddressData:
-      title: BillingBookingAddressData
-      description: Address data for billing addresses. Requires email and phone in addition to the base address fields.
-      required:
-      - email
-      - phone
-      allOf:
-      - $ref: '#/components/schemas/BookingAddressData'
-      x-audience:
-      - velocity
-      - xhipment
-    LCLItemCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/LclCargoItem'
-    OptionalBillingItemSelectionData:
-      description: Details of the optional billing item selection
-      required:
-      - name
-      - serviceItem
-      properties:
-        name:
-          type: string
-        serviceItem:
-          type: string
-          enum:
-          - Pickup
-          - Delivery
-          - PortOriginCharges
-          - PortDestinationCharges
-          - Freight
-          - AdditionalService
-        data:
-          type: object
-      type: object
-    BookingTrackAndTraceData:
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          example: 918f07a7-14b3-4587-aa46-69f9089dd663
-        estimatedTimeArrival:
-          type: string
-          example: '2021-09-01 12:00:00'
-        estimatedTimeDeparture:
-          type: string
-          example: '2021-09-01 12:00:00'
-        actualTimeArrival:
-          type:
-          - string
-          - 'null'
-          example: '2021-09-01 12:00:00'
-        actualTimeDeparture:
-          type:
-          - string
-          - 'null'
-          example: '2021-09-01 12:00:00'
-        status:
-          type: string
-          enum:
-          - PREBOOKING
-          - REQUESTED
-          - PENDING
-          - CANCELED
-          - DONE
-          example: PREBOOKING
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    BookingLocation:
-      properties:
-        locationType:
-          type: string
-          example: PORT
-        portIsoCode:
-          type: string
-          example: ESBCN
-        postalCode:
-          type:
-          - string
-          - 'null'
-          example: 08001
-        cityName:
-          type:
-          - string
-          - 'null'
-          example: Barcelona
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
     422Response:
       properties:
         message:
@@ -612,161 +496,10 @@ components:
             items:
               type: string
       type: object
-    BookingChargeCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/BookingCharge'
-      x-audience:
-      - velocity
-      - xhipment
-    BookRateResource:
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/AsyncBooking'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
     BookingDocumentDownloadResource:
       properties:
         data:
           $ref: '#/components/schemas/BookingDocumentDownloadData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    LclCargoItem:
-      properties:
-        weight:
-          type: number
-          format: float
-          example: 105.25
-        weightUnit:
-          $ref: '#/components/schemas/WeightUnit'
-        volume:
-          type: number
-          format: float
-          example: 3.69
-        volumeUnit:
-          $ref: '#/components/schemas/VolumeUnit'
-        height:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 10.2
-        length:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 2.9
-        width:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 13.2
-        dimensionUnit:
-          oneOf:
-          - $ref: '#/components/schemas/DimensionUnit'
-          type:
-          - string
-          - 'null'
-        quantity:
-          type: number
-          example: 4
-        packageType:
-          $ref: '#/components/schemas/PackageType'
-        cargoDescription:
-          type:
-          - string
-          - 'null'
-          example: Electronics
-        cargoType:
-          type:
-          - string
-          - 'null'
-          example: general
-        stackable:
-          type:
-          - boolean
-          - 'null'
-          example: true
-        temperatureControl:
-          oneOf:
-          - $ref: '#/components/schemas/TemperatureControlledGoods'
-        dangerousGoods:
-          type: array
-          items:
-            $ref: '#/components/schemas/DangerousGood'
-        numberOfPieces:
-          type: integer
-          example: 7
-      type: object
-    AsyncBooking:
-      required:
-      - bookingUuid
-      properties:
-        bookingUuid:
-          type: string
-          format: uuid
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    TemperatureControlledGoods:
-      description: Temperature limits for temperature-controlled cargo (LCL/AIR/LTL)
-      required:
-      - min
-      - max
-      - unit
-      properties:
-        min:
-          type: number
-          format: float
-          example: 2
-        max:
-          type: number
-          format: float
-          example: 8
-        unit:
-          $ref: '#/components/schemas/TemperatureUnit'
-      type: object
-    DangerousGood:
-      description: Dangerous good identified by its UN number
-      required:
-      - unNumber
-      properties:
-        unNumber:
-          type: string
-          example: UN1993
-      type: object
-    BookingResource:
-      properties:
-        data:
-          $ref: '#/components/schemas/BookingData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    TemperatureUnit:
-      description: Temperature unit
-      type: string
-      enum:
-      - C
-      - F
-      example: C
-    OptionalDimensionedCargoItemCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/OptionalDimensionedCargoItem'
-    BookingTrackAndTraceResource:
-      properties:
-        data:
-          $ref: '#/components/schemas/BookingTrackAndTraceData'
       type: object
       x-audience:
       - velocity
@@ -836,266 +569,6 @@ components:
           items:
             $ref: '#/components/schemas/DangerousGood'
       type: object
-    BookRateRequest:
-      title: BookRateRequest
-      required:
-      - currency
-      - servicesSelected
-      - bookingDetails
-      - optionalBillingItems
-      properties:
-        currency:
-          type: string
-          example: EUR
-        lang:
-          type: string
-          enum:
-          - es_ES
-          - en_US
-        servicesSelected:
-          $ref: '#/components/schemas/ServicesSelected'
-        bookingDetails:
-          required:
-          - cargoReadyDate
-          - commodity
-          properties:
-            cargoReadyDate:
-              description: Date when the cargo is ready to be picked up. The date must be today or in the future.
-              type: string
-              format: date
-            commodity:
-              type: string
-              enum:
-              - Regular Cargo
-              - Refrigerated
-              - Hazardous goods (DGR, IMO)
-              - Perishable
-              - Used Tires/Scrap
-              - Household Goods
-              - Livestock and Animals
-              - Explosives
-          type: object
-        optionalBillingItems:
-          description: Property used to book optional additional services.
-          type: array
-          items:
-            $ref: '#/components/schemas/OptionalBillingItemSelectionData'
-        addresses:
-          description: Optional addresses to associate with the booking. Each key is an address type (shipper, consignee, pickup, delivery, billing).
-          properties:
-            shipper:
-              $ref: '#/components/schemas/BookingAddressData'
-            consignee:
-              $ref: '#/components/schemas/BookingAddressData'
-            pickup:
-              $ref: '#/components/schemas/BookingAddressData'
-            delivery:
-              $ref: '#/components/schemas/BookingAddressData'
-            billing:
-              $ref: '#/components/schemas/BillingBookingAddressData'
-          type:
-          - object
-          - 'null'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    Address:
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          example: John Doe
-        address:
-          type:
-          - string
-          - 'null'
-          example: Carrer de la Marina, 16
-        postalCode:
-          type:
-          - string
-          - 'null'
-          example: 08001
-        city:
-          type:
-          - string
-          - 'null'
-          example: Barcelona
-        country:
-          type:
-          - string
-          - 'null'
-          example: ES
-        phone:
-          type:
-          - string
-          - 'null'
-          example: +34 123 456 789
-        email:
-          type:
-          - string
-          - 'null'
-          example: hi@icontainers.com
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    BookingCharge:
-      properties:
-        amount:
-          type: number
-          example: 100
-        currency:
-          type: string
-          example: EUR
-        description:
-          type: string
-          example: Description of the charge
-        taxes:
-          type: number
-          example: 21
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    BookingDocumentDownloadData:
-      properties:
-        url:
-          type: string
-          example: https://icontainers-s3-bucket/2040455/COMM_INVOICE/COMM_INVOICE_1.docx
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    Bookings.AddDocumentForBookingRequest:
-      required:
-      - documentType
-      - document
-      properties:
-        documentType:
-          description: Type of document
-          type: string
-          enum:
-          - CommercialInvoice
-          - PackingList
-          - Others
-          example: CommercialInvoice
-        document:
-          description: Document file (PDF, CSV, or XLSX)
-          type: string
-          format: binary
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    Document:
-      properties:
-        id:
-          type: string
-          example: WcOADB4ddQXukNi6cvZVm6SLOrJUlNF5AGYFh-mbxHZNXKpMB8-QdC5AGsiBbJ6cIxFDMRHzb4glE3ngExtiTcdC
-        name:
-          type: string
-          example: Document name
-        createdAt:
-          type: string
-          example: '2022-01-02 00:00:00'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    ContainerTemperatureControl:
-      description: Temperature control for reefer containers (FCL)
-      required:
-      - cargoLimits
-      - setPoint
-      - requiresGenset
-      properties:
-        cargoLimits:
-          properties:
-            min:
-              type: number
-              format: float
-              example: -15
-            max:
-              type: number
-              format: float
-              example: 8
-            unit:
-              $ref: '#/components/schemas/TemperatureUnit'
-          type: object
-        setPoint:
-          properties:
-            value:
-              type: number
-              format: float
-              example: -3
-            unit:
-              $ref: '#/components/schemas/TemperatureUnit'
-          type: object
-        requiresGenset:
-          type: boolean
-          example: true
-      type: object
-    DimensionedCargoItemCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/DimensionedCargoItem'
-    Money:
-      properties:
-        amount:
-          type: number
-          example: 100
-        currency:
-          type: string
-          example: EUR
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    PackageType:
-      description: Package type
-      type: string
-      enum:
-      - Container
-      - Package
-      - Bag
-      - Bulk Bag
-      - Break Bulk
-      - Bale Compressed
-      - Bale Uncompressed
-      - Bundle
-      - Bottle
-      - Box
-      - Basket
-      - Case
-      - Coil
-      - Cradle
-      - Crate
-      - Carton
-      - Cylinder
-      - Dozen
-      - Drum
-      - Envelope
-      - Gross
-      - Keg
-      - Mix
-      - Pail
-      - Piece
-      - Pallet
-      - Reel
-      - Roll
-      - Sheet
-      - Skid
-      - Spool
-      - Tote
-      - Tube
-      - Unit
-      example: Pallet
-    ContainerItemCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/ContainerItem'
     BookingData:
       properties:
         uuid:
@@ -1174,15 +647,155 @@ components:
       x-audience:
       - velocity
       - xhipment
-    DimensionUnit:
-      description: Dimension unit
-      type: string
-      enum:
-      - cm
-      - m
-      - ft
-      - in
-      example: cm
+    BookingResource:
+      properties:
+        data:
+          $ref: '#/components/schemas/BookingData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    DimensionedCargoItemCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/DimensionedCargoItem'
+    BookingAddressData:
+      title: BookingAddressData
+      description: Address data to associate with a booking.
+      required:
+      - address
+      - city
+      - companyName
+      - countryIsoCode
+      - contactName
+      properties:
+        address:
+          type: string
+        city:
+          type: string
+        companyName:
+          type: string
+        countryIsoCode:
+          description: ISO 3166-1 alpha-2 country code
+          type: string
+          maxLength: 2
+          minLength: 2
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        eoriCode:
+          type:
+          - string
+          - 'null'
+        legalId:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        stateCode:
+          type:
+          - string
+          - 'null'
+        contactName:
+          type: string
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    OptionalBillingItemSelectionData:
+      description: Details of the optional billing item selection
+      required:
+      - name
+      - serviceItem
+      properties:
+        name:
+          type: string
+        serviceItem:
+          type: string
+          enum:
+          - Pickup
+          - Delivery
+          - PortOriginCharges
+          - PortDestinationCharges
+          - Freight
+          - AdditionalService
+        data:
+          type: object
+      type: object
+    BookingDocumentDownloadData:
+      properties:
+        url:
+          type: string
+          example: https://icontainers-s3-bucket/2040455/COMM_INVOICE/COMM_INVOICE_1.docx
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    Document:
+      properties:
+        id:
+          type: string
+          example: WcOADB4ddQXukNi6cvZVm6SLOrJUlNF5AGYFh-mbxHZNXKpMB8-QdC5AGsiBbJ6cIxFDMRHzb4glE3ngExtiTcdC
+        name:
+          type: string
+          example: Document name
+        createdAt:
+          type: string
+          example: '2022-01-02 00:00:00'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    Address:
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          example: John Doe
+        address:
+          type:
+          - string
+          - 'null'
+          example: Carrer de la Marina, 16
+        postalCode:
+          type:
+          - string
+          - 'null'
+          example: 08001
+        city:
+          type:
+          - string
+          - 'null'
+          example: Barcelona
+        country:
+          type:
+          - string
+          - 'null'
+          example: ES
+        phone:
+          type:
+          - string
+          - 'null'
+          example: +34 123 456 789
+        email:
+          type:
+          - string
+          - 'null'
+          example: hi@icontainers.com
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
     ServicesSelected:
       description: Details of the services selected
       required:
@@ -1202,6 +815,393 @@ components:
           type: boolean
         delivery:
           type: boolean
+      type: object
+    BookRateRequest:
+      title: BookRateRequest
+      required:
+      - currency
+      - servicesSelected
+      - bookingDetails
+      - optionalBillingItems
+      properties:
+        currency:
+          type: string
+          example: EUR
+        lang:
+          type: string
+          enum:
+          - es_ES
+          - en_US
+        servicesSelected:
+          $ref: '#/components/schemas/ServicesSelected'
+        bookingDetails:
+          required:
+          - cargoReadyDate
+          - commodity
+          properties:
+            cargoReadyDate:
+              description: Date when the cargo is ready to be picked up. The date must be today or in the future.
+              type: string
+              format: date
+            commodity:
+              type: string
+              enum:
+              - Regular Cargo
+              - Refrigerated
+              - Hazardous goods (DGR, IMO)
+              - Perishable
+              - Used Tires/Scrap
+              - Household Goods
+              - Livestock and Animals
+              - Explosives
+          type: object
+        optionalBillingItems:
+          description: Property used to book optional additional services.
+          type: array
+          items:
+            $ref: '#/components/schemas/OptionalBillingItemSelectionData'
+        addresses:
+          description: Optional addresses to associate with the booking. Each key is an address type (shipper, consignee, pickup, delivery, billing).
+          properties:
+            shipper:
+              $ref: '#/components/schemas/BookingAddressData'
+            consignee:
+              $ref: '#/components/schemas/BookingAddressData'
+            pickup:
+              $ref: '#/components/schemas/BookingAddressData'
+            delivery:
+              $ref: '#/components/schemas/BookingAddressData'
+            billing:
+              $ref: '#/components/schemas/BillingBookingAddressData'
+          type:
+          - object
+          - 'null'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    BookRateResource:
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/AsyncBooking'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    AsyncBooking:
+      required:
+      - bookingUuid
+      properties:
+        bookingUuid:
+          type: string
+          format: uuid
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    BookingLocation:
+      properties:
+        locationType:
+          type: string
+          example: PORT
+        portIsoCode:
+          type: string
+          example: ESBCN
+        postalCode:
+          type:
+          - string
+          - 'null'
+          example: 08001
+        cityName:
+          type:
+          - string
+          - 'null'
+          example: Barcelona
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    LclCargoItem:
+      properties:
+        weight:
+          type: number
+          format: float
+          example: 105.25
+        weightUnit:
+          $ref: '#/components/schemas/WeightUnit'
+        volume:
+          type: number
+          format: float
+          example: 3.69
+        volumeUnit:
+          $ref: '#/components/schemas/VolumeUnit'
+        height:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 10.2
+        length:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 2.9
+        width:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 13.2
+        dimensionUnit:
+          oneOf:
+          - $ref: '#/components/schemas/DimensionUnit'
+          type:
+          - string
+          - 'null'
+        quantity:
+          type: number
+          example: 4
+        packageType:
+          $ref: '#/components/schemas/PackageType'
+        cargoDescription:
+          type:
+          - string
+          - 'null'
+          example: Electronics
+        cargoType:
+          type:
+          - string
+          - 'null'
+          example: general
+        stackable:
+          type:
+          - boolean
+          - 'null'
+          example: true
+        temperatureControl:
+          oneOf:
+          - $ref: '#/components/schemas/TemperatureControlledGoods'
+        dangerousGoods:
+          type: array
+          items:
+            $ref: '#/components/schemas/DangerousGood'
+        numberOfPieces:
+          type: integer
+          example: 7
+      type: object
+    OptionalDimensionedCargoItemCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/OptionalDimensionedCargoItem'
+    OptionalDimensionedCargoItem:
+      required:
+      - weight
+      - weightUnit
+      - quantity
+      - packageType
+      - numberOfPieces
+      properties:
+        weight:
+          type: number
+          format: float
+          example: 105.8
+        weightUnit:
+          $ref: '#/components/schemas/WeightUnit'
+        height:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 10.2
+        length:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 2.9
+        width:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 13.2
+        dimensionUnit:
+          oneOf:
+          - $ref: '#/components/schemas/DimensionUnit'
+        volume:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 3.69
+        volumeUnit:
+          oneOf:
+          - $ref: '#/components/schemas/VolumeUnit'
+        quantity:
+          type: number
+          example: 3
+        packageType:
+          $ref: '#/components/schemas/PackageType'
+        cargoDescription:
+          type:
+          - string
+          - 'null'
+          example: Fragile goods
+        cargoType:
+          type:
+          - string
+          - 'null'
+          example: general
+        stackable:
+          type:
+          - boolean
+          - 'null'
+          example: false
+        temperatureControl:
+          oneOf:
+          - $ref: '#/components/schemas/TemperatureControlledGoods'
+        dangerousGoods:
+          type: array
+          items:
+            $ref: '#/components/schemas/DangerousGood'
+        numberOfPieces:
+          type: integer
+          example: 9
+      type: object
+    LCLItemCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/LclCargoItem'
+    BookingCharge:
+      properties:
+        amount:
+          type: number
+          example: 100
+        currency:
+          type: string
+          example: EUR
+        description:
+          type: string
+          example: Description of the charge
+        taxes:
+          type: number
+          example: 21
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    BillingBookingAddressData:
+      title: BillingBookingAddressData
+      description: Address data for billing addresses. Requires email and phone in addition to the base address fields.
+      required:
+      - email
+      - phone
+      allOf:
+      - $ref: '#/components/schemas/BookingAddressData'
+      x-audience:
+      - velocity
+      - xhipment
+    BookingParty:
+      properties:
+        shipper:
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          type:
+          - object
+          - 'null'
+        consignee:
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          type:
+          - object
+          - 'null'
+        notify:
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          type:
+          - object
+          - 'null'
+        billing:
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          type:
+          - object
+          - 'null'
+        pickup:
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          type:
+          - object
+          - 'null'
+        delivery:
+          oneOf:
+          - $ref: '#/components/schemas/Address'
+          type:
+          - object
+          - 'null'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    PackageType:
+      description: Package type
+      type: string
+      enum:
+      - Container
+      - Package
+      - Bag
+      - Bulk Bag
+      - Break Bulk
+      - Bale Compressed
+      - Bale Uncompressed
+      - Bundle
+      - Bottle
+      - Box
+      - Basket
+      - Case
+      - Coil
+      - Cradle
+      - Crate
+      - Carton
+      - Cylinder
+      - Dozen
+      - Drum
+      - Envelope
+      - Gross
+      - Keg
+      - Mix
+      - Pail
+      - Piece
+      - Pallet
+      - Reel
+      - Roll
+      - Sheet
+      - Skid
+      - Spool
+      - Tote
+      - Tube
+      - Unit
+      example: Pallet
+    TemperatureControlledGoods:
+      description: Temperature limits for temperature-controlled cargo (LCL/AIR/LTL)
+      required:
+      - min
+      - max
+      - unit
+      properties:
+        min:
+          type: number
+          format: float
+          example: 2
+        max:
+          type: number
+          format: float
+          example: 8
+        unit:
+          $ref: '#/components/schemas/TemperatureUnit'
       type: object
   securitySchemes:
     bearerAuth:

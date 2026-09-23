@@ -202,6 +202,197 @@ paths:
       - xhipment
 components:
   schemas:
+    PostalCodeQuoteLocationResponse:
+      required:
+      - countryIsoCode
+      - postalCode
+      - type
+      properties:
+        type:
+          type: string
+        countryIsoCode:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type:
+          - string
+          - 'null'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    FclQuoteResource:
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/FclQuote'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    QuoteType:
+      type: string
+      enum:
+      - Instant quote
+      - Partial instant quote
+      - Not instant quote
+      - Mixed quote
+      x-audience:
+      - velocity
+      - xhipment
+    Price:
+      required:
+      - currency
+      - amount
+      - taxes
+      - total
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+        amount:
+          type: number
+          example: 100
+        taxes:
+          type: number
+        total:
+          type: number
+          example: 100
+      type: object
+    MaritimeQuoteLocationRequest:
+      discriminator:
+        propertyName: type
+        mapping:
+          postalCode: '#/components/schemas/PostalCodeQuoteLocationRequest'
+          port: '#/components/schemas/PortQuoteLocationRequest'
+      oneOf:
+      - $ref: '#/components/schemas/PostalCodeQuoteLocationRequest'
+      - $ref: '#/components/schemas/PortQuoteLocationRequest'
+      x-audience:
+      - velocity
+      - xhipment
+    ContainerTemperatureControl:
+      description: Temperature control for reefer containers (FCL)
+      required:
+      - cargoLimits
+      - setPoint
+      - requiresGenset
+      properties:
+        cargoLimits:
+          properties:
+            min:
+              type: number
+              format: float
+              example: -15
+            max:
+              type: number
+              format: float
+              example: 8
+            unit:
+              $ref: '#/components/schemas/TemperatureUnit'
+          type: object
+        setPoint:
+          properties:
+            value:
+              type: number
+              format: float
+              example: -3
+            unit:
+              $ref: '#/components/schemas/TemperatureUnit'
+          type: object
+        requiresGenset:
+          type: boolean
+          example: true
+      type: object
+    AirportQuoteLocationResponse:
+      required:
+      - type
+      - iata
+      properties:
+        type:
+          type: string
+        iata:
+          type: string
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    Supplier:
+      properties:
+        name:
+          type: string
+      type: object
+    PostFclQuoteRequest:
+      required:
+      - containers
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/PostMaritimeQuoteRequest'
+      - properties:
+          containers:
+            type: array
+            items:
+              required:
+              - quantity
+              - type
+              properties:
+                quantity:
+                  type: integer
+                  format: int32
+                  example: 1
+                type:
+                  type: string
+                  enum:
+                  - DV20
+                  - DV40
+                  - DV40HC
+              type: object
+        type: object
+      x-audience:
+      - velocity
+      - xhipment
+    ContainerItemCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContainerItem'
+    VolumeUnit:
+      description: Volume unit
+      type: string
+      enum:
+      - CM3
+      - M3
+      - IN3
+      - FT3
+      example: M3
+    InlandSchedule:
+      required:
+      - postalCode
+      - cityName
+      properties:
+        postalCode:
+          type: string
+          example: '33000'
+        cityName:
+          type:
+          - string
+          - 'null'
+          example: Madrid
+      type: object
+      x-audience: velocity
+    BillingItems:
+      type: array
+      items:
+        $ref: '#/components/schemas/BillingItem'
+    DangerousGood:
+      description: Dangerous good identified by its UN number
+      required:
+      - unNumber
+      properties:
+        unNumber:
+          type: string
+          example: UN1993
+      type: object
     PostLclQuoteRequest:
       required:
       - cargo
@@ -315,6 +506,239 @@ components:
       x-audience:
       - velocity
       - xhipment
+    LclQuoteResource:
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/LclQuote'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    CreateQuoteResource:
+      required:
+      - data
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/FclQuote'
+      - properties:
+          data:
+            oneOf:
+            - $ref: '#/components/schemas/FclQuote'
+            - $ref: '#/components/schemas/LclQuote'
+            - $ref: '#/components/schemas/AirQuote'
+        type: object
+      x-audience: velocity
+    DimensionUnit:
+      description: Dimension unit
+      type: string
+      enum:
+      - cm
+      - m
+      - ft
+      - in
+      example: cm
+    ServiceItem:
+      type: string
+      enum:
+      - Freight
+      - Pickup
+      - PortOriginCharges
+      - PortDestinationCharges
+      - Delivery
+      - Others
+      - AdditionalService
+      example: Freight
+    PostalCodeQuoteLocationRequest:
+      required:
+      - country
+      - postalCode
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - postalCode
+        country:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type:
+          - string
+          - 'null'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    AirQuoteResource:
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/AirQuote'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    RateResource:
+      required:
+      - uuid
+      - expirationDate
+      - direct
+      - schedule
+      - billingItems
+      - transitTime
+      - publicTags
+      - suppliersInformation
+      - pickupSchedule
+      - deliverySchedule
+      - total
+      - rateType
+      - isPartial
+      - departureWeekdays
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        expirationDate:
+          type: string
+          format: date
+          example: '3023-02-01'
+        direct:
+          type: boolean
+        schedule:
+          $ref: '#/components/schemas/RateSchedule'
+        billingItems:
+          $ref: '#/components/schemas/BillingItems'
+        transitTime:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+        publicTags:
+          type: array
+          items:
+            type: string
+            enum:
+            - Promoted
+            - Cheapest
+            - Fastest
+            - Spot
+            - Partial
+            - Unbreakable
+            - Origin Prerequisite
+            - Destination Prerequisite
+            - Pickup Included
+            - Origin Included
+            - Destination Included
+            - Delivery Included
+            example: Promoted
+        suppliersInformation:
+          $ref: '#/components/schemas/SuppliersInformation'
+        pickupSchedule:
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/InlandSchedule'
+        deliverySchedule:
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/InlandSchedule'
+        total:
+          $ref: '#/components/schemas/Price'
+        rateType:
+          enum:
+          - Private
+          - Mixed
+          - Public
+          example: Mixed
+        isPartial:
+          type: boolean
+          example: false
+        departureWeekdays:
+          oneOf:
+          - $ref: '#/components/schemas/DepartureWeekdays'
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            example: 1
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    TemperatureUnit:
+      description: Temperature unit
+      type: string
+      enum:
+      - C
+      - F
+      example: C
+    AirportQuoteLocationRequest:
+      required:
+      - type
+      - iata
+      properties:
+        type:
+          type: string
+        iata:
+          type: string
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    Currency:
+      type: string
+      example: EUR
+    MaritimeQuoteLocationResponse:
+      discriminator:
+        propertyName: type
+        mapping:
+          postalCode: '#/components/schemas/PostalCodeQuoteLocationResponse'
+          port: '#/components/schemas/PortQuoteLocationResponse'
+      oneOf:
+      - $ref: '#/components/schemas/PostalCodeQuoteLocationResponse'
+      - $ref: '#/components/schemas/PortQuoteLocationResponse'
+      x-audience:
+      - velocity
+      - xhipment
+    FclQuote:
+      required:
+      - origin
+      - destination
+      - items
+      - shipmentType
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Quote'
+      - properties:
+          origin:
+            $ref: '#/components/schemas/MaritimeQuoteLocationResponse'
+          destination:
+            $ref: '#/components/schemas/MaritimeQuoteLocationResponse'
+          items:
+            $ref: '#/components/schemas/ContainerItemCollection'
+          shipmentType:
+            enum:
+            - FCL
+        type: object
+      x-audience:
+      - velocity
+      - xhipment
     LclQuote:
       required:
       - origin
@@ -338,15 +762,6 @@ components:
       x-audience:
       - velocity
       - xhipment
-    VolumeUnit:
-      description: Volume unit
-      type: string
-      enum:
-      - CM3
-      - M3
-      - IN3
-      - FT3
-      example: M3
     DimensionedCargoItem:
       required:
       - weight
@@ -418,155 +833,6 @@ components:
       - Ton
       - Lb
       example: Kg
-    Supplier:
-      properties:
-        name:
-          type: string
-      type: object
-    PostalCodeQuoteLocationRequest:
-      required:
-      - country
-      - postalCode
-      - type
-      properties:
-        type:
-          type: string
-          enum:
-          - postalCode
-        country:
-          type: string
-        postalCode:
-          type: string
-        city:
-          type:
-          - string
-          - 'null'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    Transhipment:
-      type: array
-      items:
-        $ref: '#/components/schemas/JourneyPointResource'
-      x-audience:
-      - velocity
-      - xhipment
-    DepartureWeekdays:
-      type: array
-      items:
-        type: integer
-        enum:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        example: 1
-      x-audience:
-      - velocity
-      - xhipment
-    PortQuoteLocationRequest:
-      required:
-      - type
-      - portIsoCode
-      properties:
-        type:
-          type: string
-          enum:
-          - port
-        portIsoCode:
-          type: string
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    AirportQuoteLocationRequest:
-      required:
-      - type
-      - iata
-      properties:
-        type:
-          type: string
-        iata:
-          type: string
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    AirQuoteResource:
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/AirQuote'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    LCLItemCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/LclCargoItem'
-    PostalCodeQuoteLocationResponse:
-      required:
-      - countryIsoCode
-      - postalCode
-      - type
-      properties:
-        type:
-          type: string
-        countryIsoCode:
-          type: string
-        postalCode:
-          type: string
-        city:
-          type:
-          - string
-          - 'null'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    JourneyPointResource:
-      required:
-      - code
-      properties:
-        code:
-          description: Port iso code (5 chars) or IATA code (3 chars)
-          type: string
-          example: USMIA
-      type: object
-    PostMaritimeQuoteRequest:
-      allOf:
-      - $ref: '#/components/schemas/CreateQuoteRequest'
-      - required:
-        - origin
-        - destination
-        properties:
-          origin:
-            $ref: '#/components/schemas/MaritimeQuoteLocationRequest'
-          destination:
-            $ref: '#/components/schemas/MaritimeQuoteLocationRequest'
-        type: object
-      x-audience:
-      - velocity
-      - xhipment
-    PortQuoteLocationResponse:
-      required:
-      - type
-      - portIsoCode
-      properties:
-        type:
-          type: string
-        portIsoCode:
-          type: string
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
     422Response:
       properties:
         message:
@@ -581,407 +847,39 @@ components:
             items:
               type: string
       type: object
-    FclQuoteResource:
+    CreateQuoteRequest:
       required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/FclQuote'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    MaritimeQuoteLocationResponse:
-      discriminator:
-        propertyName: type
-        mapping:
-          postalCode: '#/components/schemas/PostalCodeQuoteLocationResponse'
-          port: '#/components/schemas/PortQuoteLocationResponse'
-      oneOf:
-      - $ref: '#/components/schemas/PostalCodeQuoteLocationResponse'
-      - $ref: '#/components/schemas/PortQuoteLocationResponse'
-      x-audience:
-      - velocity
-      - xhipment
-    PostAirQuoteRequest:
-      allOf:
-      - $ref: '#/components/schemas/CreateQuoteRequest'
-      - required:
-        - cargo
-        - origin
-        - destination
-        properties:
-          cargo:
-            type: array
-            items:
-              required:
-              - height
-              - weight
-              - length
-              - width
-              - quantity
-              - dimensionUnit
-              - weightUnit
-              properties:
-                height:
-                  type: number
-                  format: float
-                  example: 105.8
-                weight:
-                  type: number
-                  format: float
-                  example: 105.8
-                length:
-                  type: number
-                  format: float
-                  example: 105.8
-                width:
-                  type: number
-                  format: float
-                  example: 105.8
-                quantity:
-                  type: integer
-                  format: int32
-                  example: 1
-                dimensionUnit:
-                  type: string
-                  enum:
-                  - cm
-                  - m
-                  - in
-                  - ft
-                weightUnit:
-                  type: string
-                  enum:
-                  - Kg
-                  - Ton
-                  - Lb
-                packageType:
-                  description: Package type
-                  type:
-                  - string
-                  - 'null'
-                  enum:
-                  - Container
-                  - Package
-                  - Bag
-                  - Bulk Bag
-                  - Break Bulk
-                  - Bale Compressed
-                  - Bale Uncompressed
-                  - Bundle
-                  - Bottle
-                  - Box
-                  - Basket
-                  - Case
-                  - Coil
-                  - Cradle
-                  - Crate
-                  - Carton
-                  - Cylinder
-                  - Dozen
-                  - Drum
-                  - Envelope
-                  - Gross
-                  - Keg
-                  - Mix
-                  - Pail
-                  - Piece
-                  - Pallet
-                  - Reel
-                  - Roll
-                  - Sheet
-                  - Skid
-                  - Spool
-                  - Tote
-                  - Tube
-                  - Unit
-              type: object
-          isKnownShipper:
-            type: boolean
-            default: true
-          origin:
-            $ref: '#/components/schemas/AerialQuoteLocationRequest'
-          destination:
-            $ref: '#/components/schemas/AerialQuoteLocationRequest'
-          cargoReadyDate:
-            type: string
-            format: date
-        type: object
-      x-audience:
-      - velocity
-      - xhipment
-    Currency:
-      type: string
-      example: EUR
-    RateSchedule:
-      required:
-      - departureDate
-      - cutOffDate
-      - vesselName
-      - voyageNumber
-      - transitDays
-      - origin
-      - destination
-      - originRouting
-      - destinationRouting
-      properties:
-        departureDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2023-02-01T00:00:00+00:00'
-        cutOffDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2023-01-01T00:00:00+00:00'
-        vesselName:
-          type:
-          - string
-          - 'null'
-        voyageNumber:
-          type:
-          - string
-          - 'null'
-        transitDays:
-          type:
-          - integer
-          - 'null'
-          minimum: 1
-        origin:
-          $ref: '#/components/schemas/JourneyPointResource'
-        destination:
-          $ref: '#/components/schemas/JourneyPointResource'
-        originRouting:
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/JourneyPointResource'
-        destinationRouting:
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/JourneyPointResource'
-        transhipment:
-          $ref: '#/components/schemas/Transhipment'
-      type: object
-    PostFclQuoteRequest:
-      required:
-      - containers
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/PostMaritimeQuoteRequest'
-      - properties:
-          containers:
-            type: array
-            items:
-              required:
-              - quantity
-              - type
-              properties:
-                quantity:
-                  type: integer
-                  format: int32
-                  example: 1
-                type:
-                  type: string
-                  enum:
-                  - DV20
-                  - DV40
-                  - DV40HC
-              type: object
-        type: object
-      x-audience:
-      - velocity
-      - xhipment
-    LclCargoItem:
-      properties:
-        weight:
-          type: number
-          format: float
-          example: 105.25
-        weightUnit:
-          $ref: '#/components/schemas/WeightUnit'
-        volume:
-          type: number
-          format: float
-          example: 3.69
-        volumeUnit:
-          $ref: '#/components/schemas/VolumeUnit'
-        height:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 10.2
-        length:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 2.9
-        width:
-          type:
-          - number
-          - 'null'
-          format: float
-          example: 13.2
-        dimensionUnit:
-          oneOf:
-          - $ref: '#/components/schemas/DimensionUnit'
-          type:
-          - string
-          - 'null'
-        quantity:
-          type: number
-          example: 4
-        packageType:
-          $ref: '#/components/schemas/PackageType'
-        cargoDescription:
-          type:
-          - string
-          - 'null'
-          example: Electronics
-        cargoType:
-          type:
-          - string
-          - 'null'
-          example: general
-        stackable:
-          type:
-          - boolean
-          - 'null'
-          example: true
-        temperatureControl:
-          oneOf:
-          - $ref: '#/components/schemas/TemperatureControlledGoods'
-        dangerousGoods:
-          type: array
-          items:
-            $ref: '#/components/schemas/DangerousGood'
-        numberOfPieces:
-          type: integer
-          example: 7
-      type: object
-    TemperatureControlledGoods:
-      description: Temperature limits for temperature-controlled cargo (LCL/AIR/LTL)
-      required:
-      - min
-      - max
-      - unit
-      properties:
-        min:
-          type: number
-          format: float
-          example: 2
-        max:
-          type: number
-          format: float
-          example: 8
-        unit:
-          $ref: '#/components/schemas/TemperatureUnit'
-      type: object
-    Quote:
-      required:
-      - uuid
-      - quotedAt
       - currency
       - lang
-      - rates
-      - quoteType
-      - quoteOnlineUrl
-      - completed
       properties:
-        uuid:
-          type: string
-          format: uuid
-        quotedAt:
-          type: string
-          format: date-time
         currency:
-          $ref: '#/components/schemas/Currency'
+          type: string
+          default: EUR
+          example: EUR
         lang:
           type: string
+          default: en_US
           example: es_ES
-        rates:
-          type: array
-          items:
-            $ref: '#/components/schemas/RateResource'
-        quoteType:
-          allOf:
-          - $ref: '#/components/schemas/QuoteType'
-        quoteOnlineUrl:
-          type: string
-          format: uri
-          example: https://my.icontainers.com/quotes/74e44664-6499-4fd2
-        completed:
-          description: Indicates if the quote is completed or not
-          type: boolean
+        commodityType:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Regular Cargo
+          - Refrigerated
+          - Hazardous goods (DGR, IMO)
+          - Perishable
+          - Used Tires/Scrap
+          - Household Goods
+          - Livestock and Animals
+        maxExecutionTime:
+          description: The number of seconds to wait for the quote to be processed.
+          type:
+          - number
+          - 'null'
+          format: int32
+          maximum: 180
       type: object
-      x-audience:
-      - velocity
-      - xhipment
-    Price:
-      required:
-      - currency
-      - amount
-      - taxes
-      - total
-      properties:
-        currency:
-          $ref: '#/components/schemas/Currency'
-        amount:
-          type: number
-          example: 100
-        taxes:
-          type: number
-        total:
-          type: number
-          example: 100
-      type: object
-    DangerousGood:
-      description: Dangerous good identified by its UN number
-      required:
-      - unNumber
-      properties:
-        unNumber:
-          type: string
-          example: UN1993
-      type: object
-    TemperatureUnit:
-      description: Temperature unit
-      type: string
-      enum:
-      - C
-      - F
-      example: C
-    DimensionUnit:
-      description: Dimension unit
-      type: string
-      enum:
-      - cm
-      - m
-      - ft
-      - in
-      example: cm
-    BillingItems:
-      type: array
-      items:
-        $ref: '#/components/schemas/BillingItem'
-    MaritimeQuoteLocationRequest:
-      discriminator:
-        propertyName: type
-        mapping:
-          postalCode: '#/components/schemas/PostalCodeQuoteLocationRequest'
-          port: '#/components/schemas/PortQuoteLocationRequest'
-      oneOf:
-      - $ref: '#/components/schemas/PostalCodeQuoteLocationRequest'
-      - $ref: '#/components/schemas/PortQuoteLocationRequest'
       x-audience:
       - velocity
       - xhipment
@@ -1050,28 +948,40 @@ components:
           items:
             $ref: '#/components/schemas/DangerousGood'
       type: object
-    QuoteType:
-      type: string
-      enum:
-      - Instant quote
-      - Partial instant quote
-      - Not instant quote
-      - Mixed quote
-      x-audience:
-      - velocity
-      - xhipment
-    AerialQuoteLocationRequest:
-      discriminator:
-        propertyName: type
-        mapping:
-          postalCode: '#/components/schemas/PostalCodeQuoteLocationRequest'
-          airport: '#/components/schemas/AirportQuoteLocationRequest'
-      oneOf:
-      - $ref: '#/components/schemas/PostalCodeQuoteLocationRequest'
-      - $ref: '#/components/schemas/AirportQuoteLocationRequest'
-      x-audience:
-      - velocity
-      - xhipment
+    DimensionedCargoItemCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/DimensionedCargoItem'
+    BillingItem:
+      properties:
+        name: {}
+        serviceItem:
+          $ref: '#/components/schemas/ServiceItem'
+        optional:
+          type: boolean
+          example: false
+        price:
+          $ref: '#/components/schemas/Price'
+      type: object
+    SuppliersInformation:
+      properties:
+        freight:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/Supplier'
+        pickup:
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/Supplier'
+        delivery:
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/Supplier'
+      type: object
     PostLtlQuoteRequest:
       allOf:
       - $ref: '#/components/schemas/CreateQuoteRequest'
@@ -1202,175 +1112,321 @@ components:
       x-audience:
       - velocity
       - xhipment
-    AirportQuoteLocationResponse:
-      required:
-      - type
-      - iata
-      properties:
-        type:
-          type: string
-        iata:
-          type: string
-      type: object
+    PostAirQuoteRequest:
+      allOf:
+      - $ref: '#/components/schemas/CreateQuoteRequest'
+      - required:
+        - cargo
+        - origin
+        - destination
+        properties:
+          cargo:
+            type: array
+            items:
+              required:
+              - height
+              - weight
+              - length
+              - width
+              - quantity
+              - dimensionUnit
+              - weightUnit
+              properties:
+                height:
+                  type: number
+                  format: float
+                  example: 105.8
+                weight:
+                  type: number
+                  format: float
+                  example: 105.8
+                length:
+                  type: number
+                  format: float
+                  example: 105.8
+                width:
+                  type: number
+                  format: float
+                  example: 105.8
+                quantity:
+                  type: integer
+                  format: int32
+                  example: 1
+                dimensionUnit:
+                  type: string
+                  enum:
+                  - cm
+                  - m
+                  - in
+                  - ft
+                weightUnit:
+                  type: string
+                  enum:
+                  - Kg
+                  - Ton
+                  - Lb
+                packageType:
+                  description: Package type
+                  type:
+                  - string
+                  - 'null'
+                  enum:
+                  - Container
+                  - Package
+                  - Bag
+                  - Bulk Bag
+                  - Break Bulk
+                  - Bale Compressed
+                  - Bale Uncompressed
+                  - Bundle
+                  - Bottle
+                  - Box
+                  - Basket
+                  - Case
+                  - Coil
+                  - Cradle
+                  - Crate
+                  - Carton
+                  - Cylinder
+                  - Dozen
+                  - Drum
+                  - Envelope
+                  - Gross
+                  - Keg
+                  - Mix
+                  - Pail
+                  - Piece
+                  - Pallet
+                  - Reel
+                  - Roll
+                  - Sheet
+                  - Skid
+                  - Spool
+                  - Tote
+                  - Tube
+                  - Unit
+              type: object
+          isKnownShipper:
+            type: boolean
+            default: true
+          origin:
+            $ref: '#/components/schemas/AerialQuoteLocationRequest'
+          destination:
+            $ref: '#/components/schemas/AerialQuoteLocationRequest'
+          cargoReadyDate:
+            type: string
+            format: date
+        type: object
       x-audience:
       - velocity
       - xhipment
-    BillingItem:
-      properties:
-        name: {}
-        serviceItem:
-          $ref: '#/components/schemas/ServiceItem'
-        optional:
-          type: boolean
-          example: false
-        price:
-          $ref: '#/components/schemas/Price'
-      type: object
-    RateResource:
+    Transhipment:
+      type: array
+      items:
+        $ref: '#/components/schemas/JourneyPointResource'
+      x-audience:
+      - velocity
+      - xhipment
+    AerialQuoteLocationRequest:
+      discriminator:
+        propertyName: type
+        mapping:
+          postalCode: '#/components/schemas/PostalCodeQuoteLocationRequest'
+          airport: '#/components/schemas/AirportQuoteLocationRequest'
+      oneOf:
+      - $ref: '#/components/schemas/PostalCodeQuoteLocationRequest'
+      - $ref: '#/components/schemas/AirportQuoteLocationRequest'
+      x-audience:
+      - velocity
+      - xhipment
+    RateSchedule:
       required:
-      - uuid
-      - expirationDate
-      - direct
-      - schedule
-      - billingItems
-      - transitTime
-      - publicTags
-      - suppliersInformation
-      - pickupSchedule
-      - deliverySchedule
-      - total
-      - rateType
-      - isPartial
-      - departureWeekdays
+      - departureDate
+      - cutOffDate
+      - vesselName
+      - voyageNumber
+      - transitDays
+      - origin
+      - destination
+      - originRouting
+      - destinationRouting
       properties:
-        uuid:
-          type: string
-          format: uuid
-        expirationDate:
-          type: string
-          format: date
-          example: '3023-02-01'
-        direct:
-          type: boolean
-        schedule:
-          $ref: '#/components/schemas/RateSchedule'
-        billingItems:
-          $ref: '#/components/schemas/BillingItems'
-        transitTime:
+        departureDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2023-02-01T00:00:00+00:00'
+        cutOffDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2023-01-01T00:00:00+00:00'
+        vesselName:
+          type:
+          - string
+          - 'null'
+        voyageNumber:
+          type:
+          - string
+          - 'null'
+        transitDays:
           type:
           - integer
           - 'null'
           minimum: 1
-        publicTags:
-          type: array
-          items:
-            type: string
-            enum:
-            - Promoted
-            - Cheapest
-            - Fastest
-            - Spot
-            - Partial
-            - Unbreakable
-            - Origin Prerequisite
-            - Destination Prerequisite
-            - Pickup Included
-            - Origin Included
-            - Destination Included
-            - Delivery Included
-            example: Promoted
-        suppliersInformation:
-          $ref: '#/components/schemas/SuppliersInformation'
-        pickupSchedule:
+        origin:
+          $ref: '#/components/schemas/JourneyPointResource'
+        destination:
+          $ref: '#/components/schemas/JourneyPointResource'
+        originRouting:
           type:
           - object
           - 'null'
           allOf:
-          - $ref: '#/components/schemas/InlandSchedule'
-        deliverySchedule:
+          - $ref: '#/components/schemas/JourneyPointResource'
+        destinationRouting:
           type:
           - object
           - 'null'
           allOf:
-          - $ref: '#/components/schemas/InlandSchedule'
-        total:
-          $ref: '#/components/schemas/Price'
-        rateType:
-          enum:
-          - Private
-          - Mixed
-          - Public
-          example: Mixed
-        isPartial:
-          type: boolean
-          example: false
-        departureWeekdays:
-          oneOf:
-          - $ref: '#/components/schemas/DepartureWeekdays'
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            enum:
-            - 1
-            - 2
-            - 3
-            - 4
-            - 5
-            - 6
-            - 7
-            example: 1
+          - $ref: '#/components/schemas/JourneyPointResource'
+        transhipment:
+          $ref: '#/components/schemas/Transhipment'
       type: object
+    JourneyPointResource:
+      required:
+      - code
+      properties:
+        code:
+          description: Port iso code (5 chars) or IATA code (3 chars)
+          type: string
+          example: USMIA
+      type: object
+    DepartureWeekdays:
+      type: array
+      items:
+        type: integer
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        example: 1
       x-audience:
       - velocity
       - xhipment
-    CreateQuoteResource:
-      required:
-      - data
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/FclQuote'
-      - properties:
-          data:
-            oneOf:
-            - $ref: '#/components/schemas/FclQuote'
-            - $ref: '#/components/schemas/LclQuote'
-            - $ref: '#/components/schemas/AirQuote'
-        type: object
-      x-audience: velocity
-    CreateQuoteRequest:
-      required:
-      - currency
-      - lang
+    AerialQuoteLocationResponse:
+      discriminator:
+        propertyName: type
+        mapping:
+          postalCode: '#/components/schemas/PostalCodeQuoteLocationResponse'
+          airport: '#/components/schemas/AirportQuoteLocationResponse'
+      oneOf:
+      - $ref: '#/components/schemas/PostalCodeQuoteLocationResponse'
+      - $ref: '#/components/schemas/AirportQuoteLocationResponse'
+      x-audience:
+      - velocity
+      - xhipment
+    LclCargoItem:
       properties:
-        currency:
-          type: string
-          default: EUR
-          example: EUR
-        lang:
-          type: string
-          default: en_US
-          example: es_ES
-        commodityType:
-          type:
-          - string
-          - 'null'
-          enum:
-          - Regular Cargo
-          - Refrigerated
-          - Hazardous goods (DGR, IMO)
-          - Perishable
-          - Used Tires/Scrap
-          - Household Goods
-          - Livestock and Animals
-        maxExecutionTime:
-          description: The number of seconds to wait for the quote to be processed.
+        weight:
+          type: number
+          format: float
+          example: 105.25
+        weightUnit:
+          $ref: '#/components/schemas/WeightUnit'
+        volume:
+          type: number
+          format: float
+          example: 3.69
+        volumeUnit:
+          $ref: '#/components/schemas/VolumeUnit'
+        height:
           type:
           - number
           - 'null'
-          format: int32
-          maximum: 180
+          format: float
+          example: 10.2
+        length:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 2.9
+        width:
+          type:
+          - number
+          - 'null'
+          format: float
+          example: 13.2
+        dimensionUnit:
+          oneOf:
+          - $ref: '#/components/schemas/DimensionUnit'
+          type:
+          - string
+          - 'null'
+        quantity:
+          type: number
+          example: 4
+        packageType:
+          $ref: '#/components/schemas/PackageType'
+        cargoDescription:
+          type:
+          - string
+          - 'null'
+          example: Electronics
+        cargoType:
+          type:
+          - string
+          - 'null'
+          example: general
+        stackable:
+          type:
+          - boolean
+          - 'null'
+          example: true
+        temperatureControl:
+          oneOf:
+          - $ref: '#/components/schemas/TemperatureControlledGoods'
+        dangerousGoods:
+          type: array
+          items:
+            $ref: '#/components/schemas/DangerousGood'
+        numberOfPieces:
+          type: integer
+          example: 7
+      type: object
+    PostMaritimeQuoteRequest:
+      allOf:
+      - $ref: '#/components/schemas/CreateQuoteRequest'
+      - required:
+        - origin
+        - destination
+        properties:
+          origin:
+            $ref: '#/components/schemas/MaritimeQuoteLocationRequest'
+          destination:
+            $ref: '#/components/schemas/MaritimeQuoteLocationRequest'
+        type: object
+      x-audience:
+      - velocity
+      - xhipment
+    PortQuoteLocationRequest:
+      required:
+      - type
+      - portIsoCode
+      properties:
+        type:
+          type: string
+          enum:
+          - port
+        portIsoCode:
+          type: string
       type: object
       x-audience:
       - velocity
@@ -1405,54 +1461,63 @@ components:
       x-audience:
       - velocity
       - xhipment
-    ContainerTemperatureControl:
-      description: Temperature control for reefer containers (FCL)
-      required:
-      - cargoLimits
-      - setPoint
-      - requiresGenset
-      properties:
-        cargoLimits:
-          properties:
-            min:
-              type: number
-              format: float
-              example: -15
-            max:
-              type: number
-              format: float
-              example: 8
-            unit:
-              $ref: '#/components/schemas/TemperatureUnit'
-          type: object
-        setPoint:
-          properties:
-            value:
-              type: number
-              format: float
-              example: -3
-            unit:
-              $ref: '#/components/schemas/TemperatureUnit'
-          type: object
-        requiresGenset:
-          type: boolean
-          example: true
-      type: object
-    DimensionedCargoItemCollection:
+    LCLItemCollection:
       type: array
       items:
-        $ref: '#/components/schemas/DimensionedCargoItem'
-    ServiceItem:
-      type: string
-      enum:
-      - Freight
-      - Pickup
-      - PortOriginCharges
-      - PortDestinationCharges
-      - Delivery
-      - Others
-      - AdditionalService
-      example: Freight
+        $ref: '#/components/schemas/LclCargoItem'
+    Quote:
+      required:
+      - uuid
+      - quotedAt
+      - currency
+      - lang
+      - rates
+      - quoteType
+      - quoteOnlineUrl
+      - completed
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        quotedAt:
+          type: string
+          format: date-time
+        currency:
+          $ref: '#/components/schemas/Currency'
+        lang:
+          type: string
+          example: es_ES
+        rates:
+          type: array
+          items:
+            $ref: '#/components/schemas/RateResource'
+        quoteType:
+          allOf:
+          - $ref: '#/components/schemas/QuoteType'
+        quoteOnlineUrl:
+          type: string
+          format: uri
+          example: https://my.icontainers.com/quotes/74e44664-6499-4fd2
+        completed:
+          description: Indicates if the quote is completed or not
+          type: boolean
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    PortQuoteLocationResponse:
+      required:
+      - type
+      - portIsoCode
+      properties:
+        type:
+          type: string
+        portIsoCode:
+          type: string
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
     PackageType:
       description: Package type
       type: string
@@ -1492,89 +1557,24 @@ components:
       - Tube
       - Unit
       example: Pallet
-    ContainerItemCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/ContainerItem'
-    LclQuoteResource:
+    TemperatureControlledGoods:
+      description: Temperature limits for temperature-controlled cargo (LCL/AIR/LTL)
       required:
-      - data
+      - min
+      - max
+      - unit
       properties:
-        data:
-          $ref: '#/components/schemas/LclQuote'
+        min:
+          type: number
+          format: float
+          example: 2
+        max:
+          type: number
+          format: float
+          example: 8
+        unit:
+          $ref: '#/components/schemas/TemperatureUnit'
       type: object
-      x-audience:
-      - velocity
-      - xhipment
-    SuppliersInformation:
-      properties:
-        freight:
-          type: object
-          allOf:
-          - $ref: '#/components/schemas/Supplier'
-        pickup:
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/Supplier'
-        delivery:
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/Supplier'
-      type: object
-    AerialQuoteLocationResponse:
-      discriminator:
-        propertyName: type
-        mapping:
-          postalCode: '#/components/schemas/PostalCodeQuoteLocationResponse'
-          airport: '#/components/schemas/AirportQuoteLocationResponse'
-      oneOf:
-      - $ref: '#/components/schemas/PostalCodeQuoteLocationResponse'
-      - $ref: '#/components/schemas/AirportQuoteLocationResponse'
-      x-audience:
-      - velocity
-      - xhipment
-    InlandSchedule:
-      required:
-      - postalCode
-      - cityName
-      properties:
-        postalCode:
-          type: string
-          example: '33000'
-        cityName:
-          type:
-          - string
-          - 'null'
-          example: Madrid
-      type: object
-      x-audience: velocity
-    FclQuote:
-      required:
-      - origin
-      - destination
-      - items
-      - shipmentType
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/Quote'
-      - properties:
-          origin:
-            $ref: '#/components/schemas/MaritimeQuoteLocationResponse'
-          destination:
-            $ref: '#/components/schemas/MaritimeQuoteLocationResponse'
-          items:
-            $ref: '#/components/schemas/ContainerItemCollection'
-          shipmentType:
-            enum:
-            - FCL
-        type: object
-      x-audience:
-      - velocity
-      - xhipment
   securitySchemes:
     bearerAuth:
       type: http

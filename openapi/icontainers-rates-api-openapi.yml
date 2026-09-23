@@ -63,156 +63,6 @@ paths:
       x-audience: velocity
 components:
   schemas:
-    RateCalculatePricesResource:
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/RateCalculatePricesData'
-      type: object
-    Supplier:
-      properties:
-        name:
-          type: string
-      type: object
-    Transhipment:
-      type: array
-      items:
-        $ref: '#/components/schemas/JourneyPointResource'
-      x-audience:
-      - velocity
-      - xhipment
-    DepartureWeekdays:
-      type: array
-      items:
-        type: integer
-        enum:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-        - 7
-        example: 1
-      x-audience:
-      - velocity
-      - xhipment
-    JourneyPointResource:
-      required:
-      - code
-      properties:
-        code:
-          description: Port iso code (5 chars) or IATA code (3 chars)
-          type: string
-          example: USMIA
-      type: object
-    OptionalBillingItemSelectionData:
-      description: Details of the optional billing item selection
-      required:
-      - name
-      - serviceItem
-      properties:
-        name:
-          type: string
-        serviceItem:
-          type: string
-          enum:
-          - Pickup
-          - Delivery
-          - PortOriginCharges
-          - PortDestinationCharges
-          - Freight
-          - AdditionalService
-        data:
-          type: object
-      type: object
-    422Response:
-      properties:
-        message:
-          example: The given data was invalid.
-        errors:
-          type: object
-          example:
-            someProperty:
-            - The some property field is required.
-          additionalProperties:
-            type: array
-            items:
-              type: string
-      type: object
-    Currency:
-      type: string
-      example: EUR
-    RateSchedule:
-      required:
-      - departureDate
-      - cutOffDate
-      - vesselName
-      - voyageNumber
-      - transitDays
-      - origin
-      - destination
-      - originRouting
-      - destinationRouting
-      properties:
-        departureDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2023-02-01T00:00:00+00:00'
-        cutOffDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2023-01-01T00:00:00+00:00'
-        vesselName:
-          type:
-          - string
-          - 'null'
-        voyageNumber:
-          type:
-          - string
-          - 'null'
-        transitDays:
-          type:
-          - integer
-          - 'null'
-          minimum: 1
-        origin:
-          $ref: '#/components/schemas/JourneyPointResource'
-        destination:
-          $ref: '#/components/schemas/JourneyPointResource'
-        originRouting:
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/JourneyPointResource'
-        destinationRouting:
-          type:
-          - object
-          - 'null'
-          allOf:
-          - $ref: '#/components/schemas/JourneyPointResource'
-        transhipment:
-          $ref: '#/components/schemas/Transhipment'
-      type: object
-    RateCalculatePricesData:
-      description: Details of the response of calculate prices for a rate
-      required:
-      - rate
-      - optionalBillingItems
-      properties:
-        rate:
-          $ref: '#/components/schemas/RateResource'
-        optionalBillingItems:
-          type: array
-          items:
-            $ref: '#/components/schemas/OptionalBillingItemInformationData'
-      type: object
     Price:
       required:
       - currency
@@ -231,42 +81,54 @@ components:
           type: number
           example: 100
       type: object
+    Supplier:
+      properties:
+        name:
+          type: string
+      type: object
+    InlandSchedule:
+      required:
+      - postalCode
+      - cityName
+      properties:
+        postalCode:
+          type: string
+          example: '33000'
+        cityName:
+          type:
+          - string
+          - 'null'
+          example: Madrid
+      type: object
+      x-audience: velocity
     BillingItems:
       type: array
       items:
         $ref: '#/components/schemas/BillingItem'
-    OptionalBillingItemInformationData:
-      description: Details of the optional billing item information
+    RateCalculatePricesData:
+      description: Details of the response of calculate prices for a rate
       required:
-      - name
-      - serviceItem
-      - optional
-      - price
+      - rate
+      - optionalBillingItems
       properties:
-        name:
-          type: string
-        serviceItem:
-          $ref: '#/components/schemas/ServiceItem'
-        optional:
-          type: string
-          enum:
-          - optional
-          - required
-          - recommended
-        price:
-          type: number
+        rate:
+          $ref: '#/components/schemas/RateResource'
+        optionalBillingItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptionalBillingItemInformationData'
       type: object
-    BillingItem:
-      properties:
-        name: {}
-        serviceItem:
-          $ref: '#/components/schemas/ServiceItem'
-        optional:
-          type: boolean
-          example: false
-        price:
-          $ref: '#/components/schemas/Price'
-      type: object
+    ServiceItem:
+      type: string
+      enum:
+      - Freight
+      - Pickup
+      - PortOriginCharges
+      - PortDestinationCharges
+      - Delivery
+      - Others
+      - AdditionalService
+      example: Freight
     RateResource:
       required:
       - uuid
@@ -366,17 +228,54 @@ components:
       x-audience:
       - velocity
       - xhipment
-    ServiceItem:
+    Currency:
       type: string
-      enum:
-      - Freight
-      - Pickup
-      - PortOriginCharges
-      - PortDestinationCharges
-      - Delivery
-      - Others
-      - AdditionalService
-      example: Freight
+      example: EUR
+    422Response:
+      properties:
+        message:
+          example: The given data was invalid.
+        errors:
+          type: object
+          example:
+            someProperty:
+            - The some property field is required.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      type: object
+    BillingItem:
+      properties:
+        name: {}
+        serviceItem:
+          $ref: '#/components/schemas/ServiceItem'
+        optional:
+          type: boolean
+          example: false
+        price:
+          $ref: '#/components/schemas/Price'
+      type: object
+    OptionalBillingItemSelectionData:
+      description: Details of the optional billing item selection
+      required:
+      - name
+      - serviceItem
+      properties:
+        name:
+          type: string
+        serviceItem:
+          type: string
+          enum:
+          - Pickup
+          - Delivery
+          - PortOriginCharges
+          - PortDestinationCharges
+          - Freight
+          - AdditionalService
+        data:
+          type: object
+      type: object
     SuppliersInformation:
       properties:
         freight:
@@ -395,6 +294,121 @@ components:
           - 'null'
           allOf:
           - $ref: '#/components/schemas/Supplier'
+      type: object
+    Transhipment:
+      type: array
+      items:
+        $ref: '#/components/schemas/JourneyPointResource'
+      x-audience:
+      - velocity
+      - xhipment
+    RateSchedule:
+      required:
+      - departureDate
+      - cutOffDate
+      - vesselName
+      - voyageNumber
+      - transitDays
+      - origin
+      - destination
+      - originRouting
+      - destinationRouting
+      properties:
+        departureDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2023-02-01T00:00:00+00:00'
+        cutOffDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2023-01-01T00:00:00+00:00'
+        vesselName:
+          type:
+          - string
+          - 'null'
+        voyageNumber:
+          type:
+          - string
+          - 'null'
+        transitDays:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+        origin:
+          $ref: '#/components/schemas/JourneyPointResource'
+        destination:
+          $ref: '#/components/schemas/JourneyPointResource'
+        originRouting:
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/JourneyPointResource'
+        destinationRouting:
+          type:
+          - object
+          - 'null'
+          allOf:
+          - $ref: '#/components/schemas/JourneyPointResource'
+        transhipment:
+          $ref: '#/components/schemas/Transhipment'
+      type: object
+    ServicesSelected:
+      description: Details of the services selected
+      required:
+      - pickup
+      - origin
+      - destination
+      - freight
+      - delivery
+      properties:
+        pickup:
+          type: boolean
+        origin:
+          type: boolean
+        destination:
+          type: boolean
+        freight:
+          type: boolean
+        delivery:
+          type: boolean
+      type: object
+    JourneyPointResource:
+      required:
+      - code
+      properties:
+        code:
+          description: Port iso code (5 chars) or IATA code (3 chars)
+          type: string
+          example: USMIA
+      type: object
+    DepartureWeekdays:
+      type: array
+      items:
+        type: integer
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        example: 1
+      x-audience:
+      - velocity
+      - xhipment
+    RateCalculatePricesResource:
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RateCalculatePricesData'
       type: object
     PostRateCalculatePricesRequest:
       description: Details of the request to calculate prices for a rate
@@ -418,40 +432,26 @@ components:
           - es_ES
           - en_US
       type: object
-    InlandSchedule:
+    OptionalBillingItemInformationData:
+      description: Details of the optional billing item information
       required:
-      - postalCode
-      - cityName
+      - name
+      - serviceItem
+      - optional
+      - price
       properties:
-        postalCode:
+        name:
           type: string
-          example: '33000'
-        cityName:
-          type:
-          - string
-          - 'null'
-          example: Madrid
-      type: object
-      x-audience: velocity
-    ServicesSelected:
-      description: Details of the services selected
-      required:
-      - pickup
-      - origin
-      - destination
-      - freight
-      - delivery
-      properties:
-        pickup:
-          type: boolean
-        origin:
-          type: boolean
-        destination:
-          type: boolean
-        freight:
-          type: boolean
-        delivery:
-          type: boolean
+        serviceItem:
+          $ref: '#/components/schemas/ServiceItem'
+        optional:
+          type: string
+          enum:
+          - optional
+          - required
+          - recommended
+        price:
+          type: number
       type: object
   securitySchemes:
     bearerAuth:

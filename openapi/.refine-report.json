@@ -1,0 +1,30 @@
+{
+  "provider": "icontainers",
+  "sources": [
+    "_original/icontainers-brutus-openapi.json"
+  ],
+  "outputs": [
+    "icontainers-bookings-api-openapi.yml",
+    "icontainers-documents-api-openapi.yml",
+    "icontainers-places-api-openapi.yml",
+    "icontainers-quotes-api-openapi.yml",
+    "icontainers-rates-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "icontainers-brutus-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/icontainers-brutus-openapi.yml: archived document superseded by a larger archived document",
+    "icontainers-bookings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "icontainers-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "icontainers-places-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "icontainers-quotes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "icontainers-rates-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

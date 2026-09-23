@@ -62,7 +62,7 @@ paths:
     get:
       tags:
       - Places
-      summary: Search places for maritime transportation options (FCL/LCL).
+      summary: Search places for maritime transportation options (FCL/LCL)
       description: This method return valid results for aerial places to use in a maritime (FCL/LCL) quotation later on
       operationId: 34de8aa5b349a2047b75f06e974d840c
       parameters:
@@ -110,6 +110,14 @@ paths:
       - xhipment
 components:
   schemas:
+    SearchMaritimePlaces:
+      properties:
+        data:
+          $ref: '#/components/schemas/SearchMaritimePlacesData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
     SearchPostalCodesData:
       required:
       - countryIsoCode
@@ -129,32 +137,6 @@ components:
           type: string
           example: 08001
       type: object
-    SearchAerialPlacesData:
-      properties:
-        cities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchCitiesData'
-        postalCodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchPostalCodesData'
-        airports:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchAirportsData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    SearchAerialPlaces:
-      properties:
-        data:
-          $ref: '#/components/schemas/SearchAerialPlacesData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
     SearchSeaPortsData:
       properties:
         portName:
@@ -177,10 +159,47 @@ components:
       x-audience:
       - velocity
       - xhipment
-    SearchMaritimePlaces:
+    SearchAerialPlaces:
       properties:
         data:
-          $ref: '#/components/schemas/SearchMaritimePlacesData'
+          $ref: '#/components/schemas/SearchAerialPlacesData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchAirportsData:
+      properties:
+        airportName:
+          type: string
+          example: Barcelona-Josep Tarradellas Airport
+        iataCode:
+          type: string
+          maxLength: 3
+          minLength: 3
+          example: BCN
+        countryIsoCode:
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: ES
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchAerialPlacesData:
+      properties:
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCitiesData'
+        postalCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchPostalCodesData'
+        airports:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchAirportsData'
       type: object
       x-audience:
       - velocity
@@ -199,39 +218,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SearchSeaPortsData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    422Response:
-      properties:
-        message:
-          example: The given data was invalid.
-        errors:
-          type: object
-          example:
-            someProperty:
-            - The some property field is required.
-          additionalProperties:
-            type: array
-            items:
-              type: string
-      type: object
-    SearchAirportsData:
-      properties:
-        airportName:
-          type: string
-          example: Barcelona-Josep Tarradellas Airport
-        iataCode:
-          type: string
-          maxLength: 3
-          minLength: 3
-          example: BCN
-        countryIsoCode:
-          type: string
-          maxLength: 2
-          minLength: 2
-          example: ES
       type: object
       x-audience:
       - velocity
@@ -257,6 +243,20 @@ components:
         state:
           type: string
           example: ME
+      type: object
+    422Response:
+      properties:
+        message:
+          example: The given data was invalid.
+        errors:
+          type: object
+          example:
+            someProperty:
+            - The some property field is required.
+          additionalProperties:
+            type: array
+            items:
+              type: string
       type: object
   securitySchemes:
     bearerAuth:

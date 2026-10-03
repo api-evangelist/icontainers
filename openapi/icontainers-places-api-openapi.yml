@@ -110,6 +110,20 @@ paths:
       - xhipment
 components:
   schemas:
+    422Response:
+      properties:
+        message:
+          example: The given data was invalid.
+        errors:
+          type: object
+          example:
+            someProperty:
+            - The some property field is required.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      type: object
     SearchCitiesData:
       required:
       - countryIsoCode
@@ -132,11 +146,12 @@ components:
           type: string
           example: ME
       type: object
-    SearchSeaPortsData:
+    SearchPostalCodesData:
+      required:
+      - countryIsoCode
+      - cityName
+      - postalCode
       properties:
-        portName:
-          type: string
-          example: Barcelona Port
         countryIsoCode:
           type: string
           maxLength: 2
@@ -145,11 +160,43 @@ components:
         cityName:
           type: string
           example: Barcelona
-        portIsoCode:
+        postalCode:
+          description: Postal code
           type: string
-          maxLength: 5
-          minLength: 5
-          example: ESBCN
+          example: 08001
+      type: object
+    SearchMaritimePlacesData:
+      properties:
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCitiesData'
+        postalCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchPostalCodesData'
+        seaPorts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchSeaPortsData'
+      type: object
+      x-audience:
+      - velocity
+      - xhipment
+    SearchAerialPlacesData:
+      properties:
+        cities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCitiesData'
+        postalCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchPostalCodesData'
+        airports:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchAirportsData'
       type: object
       x-audience:
       - velocity
@@ -173,51 +220,6 @@ components:
       x-audience:
       - velocity
       - xhipment
-    SearchAerialPlacesData:
-      properties:
-        cities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchCitiesData'
-        postalCodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchPostalCodesData'
-        airports:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchAirportsData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    SearchMaritimePlaces:
-      properties:
-        data:
-          $ref: '#/components/schemas/SearchMaritimePlacesData'
-      type: object
-      x-audience:
-      - velocity
-      - xhipment
-    SearchPostalCodesData:
-      required:
-      - countryIsoCode
-      - cityName
-      - postalCode
-      properties:
-        countryIsoCode:
-          type: string
-          maxLength: 2
-          minLength: 2
-          example: ES
-        cityName:
-          type: string
-          example: Barcelona
-        postalCode:
-          description: Postal code
-          type: string
-          example: 08001
-      type: object
     SearchAerialPlaces:
       properties:
         data:
@@ -226,34 +228,32 @@ components:
       x-audience:
       - velocity
       - xhipment
-    422Response:
+    SearchSeaPortsData:
       properties:
-        message:
-          example: The given data was invalid.
-        errors:
-          type: object
-          example:
-            someProperty:
-            - The some property field is required.
-          additionalProperties:
-            type: array
-            items:
-              type: string
+        portName:
+          type: string
+          example: Barcelona Port
+        countryIsoCode:
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: ES
+        cityName:
+          type: string
+          example: Barcelona
+        portIsoCode:
+          type: string
+          maxLength: 5
+          minLength: 5
+          example: ESBCN
       type: object
-    SearchMaritimePlacesData:
+      x-audience:
+      - velocity
+      - xhipment
+    SearchMaritimePlaces:
       properties:
-        cities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchCitiesData'
-        postalCodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchPostalCodesData'
-        seaPorts:
-          type: array
-          items:
-            $ref: '#/components/schemas/SearchSeaPortsData'
+        data:
+          $ref: '#/components/schemas/SearchMaritimePlacesData'
       type: object
       x-audience:
       - velocity

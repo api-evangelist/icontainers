@@ -43,6 +43,10 @@ x-source: serena-portfolio
 specificationVersion: '0.23'
 created: '2026-08-17'
 modified: '2026-08-17'
+x-docs-platform: redocly
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-10-03
+x-docs-hosting: aws-cloudfront
 tags:
 - Company
 - Marketplace
